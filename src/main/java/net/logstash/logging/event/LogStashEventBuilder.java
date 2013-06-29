@@ -16,7 +16,7 @@ public class LogStashEventBuilder {
 	}
 	
 	public void addField(String key, Throwable value) {
-		logStashEvent.addFields(key, new SimplifiedThrowable(value));
+		addField(key, new SimplifiedThrowable(value));
 	}
 	
 	public void addTag(String tag) {
@@ -35,6 +35,19 @@ public class LogStashEventBuilder {
 		logStashEvent.setSource(source);
 	}
 
+	public void setSourcePath(String sourcePath) {
+		logStashEvent.setSource_path(sourcePath);
+	}
+	
+	public void setSourceHost(String sourceHost) {
+		logStashEvent.setSource_host(sourceHost);
+	}
+	
+	public void setType(String type) {
+		logStashEvent.setType(type);
+	}
+	
+	
 	/**
 	 * @param timestamp milliseconds since the standard base time known as "the epoch", namely January 1, 1970, 00:00:00 GMT.
 	 */

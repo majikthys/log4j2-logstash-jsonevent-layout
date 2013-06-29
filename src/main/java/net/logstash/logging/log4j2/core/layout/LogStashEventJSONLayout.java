@@ -1,13 +1,21 @@
 package net.logstash.logging.log4j2.core.layout;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import net.logstash.logging.event.LogStashEvent;
 import net.logstash.logging.event.LogStashEventBuilder;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
@@ -22,13 +30,42 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Plugin(name = "LogStashEventJSONLayout", category = "Core", elementType = "layout", printObject = true)
 public class LogStashEventJSONLayout extends AbstractStringLayout {
 	//TODO add boolean to control introspections
+	
 	protected LogStashEventJSONLayout(Charset charset, boolean prettyPrint) {
 		super(charset);
 		this.prettyPrint = prettyPrint;
 	}
 
+	// This exists only for debugging
 	private boolean prettyPrint = false;
+	private String[] tags = new String[]{};
 	
+	
+
+	// Null is significant value for the getters, meaning try to discover.  
+	protected String hostNameProperty = null;
+	protected String applicationNameProperty = null;
+	protected String localhostAddressProperty = null;
+	protected Properties properties = System.getProperties();
+	
+	protected String[] getTags() {
+		return tags;
+	}
+
+	protected void setTags(String[] tags) {
+		this.tags = tags;
+	}
+
+	protected String[] getFieldProperties() {
+		return fieldProperties;
+	}
+
+	protected void setFieldProperties(String[] fieldProperties) {
+		this.fieldProperties = fieldProperties;
+	}
+
+	private String[] fieldProperties = new String[]{};
+
 	protected static ObjectMapper objectMapper;
 	
 	
@@ -37,25 +74,65 @@ public class LogStashEventJSONLayout extends AbstractStringLayout {
 		//TODO configure objectMapper		
 	}
 	
-		
-	@Override
-	public String toSerializable(LogEvent event) {
-		LogStashEventBuilder logStashEventBuilder = new LogStashEventBuilder();
-		handleLogEvent(event, logStashEventBuilder);
-		handleMessage(event.getMessage(), logStashEventBuilder);
+	protected LogStashEventBuilder logStashEventBuilder = new LogStashEventBuilder();
 
 		
-		// TODO Auto-generated method stub
-		try {
-			return LogStashEvent.marshallToJSON(logStashEventBuilder.buildLogStashEvent(), prettyPrint);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	@Override
+	public  String toSerializable(LogEvent event) {
+		//TODO clear or oneshot builder?
+		synchronized (this) {
+			handleLocalInfo();
+			handleLogEvent(event);
+			handleMessage(event.getMessage());
+			handleTags(tags);
+			handleFieldProperties(fieldProperties);
+			
+			// TODO Auto-generated method stub
+			try {
+				return LogStashEvent.marshallToJSON(logStashEventBuilder.buildLogStashEvent(), prettyPrint);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
 
-	protected void handleLogEvent(LogEvent event, LogStashEventBuilder logStashEventBuilder) {
+	protected void handleFieldProperties(String[] fieldProperties) {
+		if (ArrayUtils.isNotEmpty(fieldProperties)) {
+			for (String fieldProperty : fieldProperties) {
+				if (properties.containsKey(fieldProperty)) {
+					logStashEventBuilder.addField(fieldProperty, properties.getProperty(fieldProperty));
+				}
+			}
+		}
+ 	}
+
+	protected void handleTags(String[] tags) {
+		if (ArrayUtils.isNotEmpty(tags)) {
+			logStashEventBuilder.addTags(tags);
+		}
+	}
+
+	protected void handleLocalInfo() {
+		String hostName = getHostName();
+		String type = getLogStashType();
+		String applicationName = getApplicationName();
+		String localAddress = getLocalhostAddress();
+		
+		logStashEventBuilder.setType(type);
+		logStashEventBuilder.setSourceHost(hostName);
+		logStashEventBuilder.setSource(type  + ";" + hostName + ";" + applicationName);
+
+		logStashEventBuilder.addField("source_address", localAddress);
+		logStashEventBuilder.addField("source_application", applicationName);
+	}
+	
+	protected String getLogStashType() {
+		return getClass().getSimpleName();
+	}
+	
+	protected void handleLogEvent(LogEvent event) {
 		//Level
 		logStashEventBuilder.addField("logger_name", event.getLoggerName());
 		logStashEventBuilder.addField("thread_name", event.getThreadName());
@@ -109,7 +186,7 @@ public class LogStashEventJSONLayout extends AbstractStringLayout {
 	 * 
 	 * @param message
 	 */
-	protected void handleMessage(Message message, LogStashEventBuilder logStashEventBuilder) {
+	protected void handleMessage(Message message) {
 		//preflight abort
 		if (message == null) {
 			return;
@@ -142,17 +219,66 @@ public class LogStashEventJSONLayout extends AbstractStringLayout {
 	public void setMessageObjectsHandler(MessageObjectsHandler messageObjectsHandler) {
 		this.messageObjectsHandler = messageObjectsHandler;
 	}
+
+	
+	
+	
+	protected void setHostNameProperty(String hostNameProperty) {
+		this.hostNameProperty = hostNameProperty;
+	}
+
+	protected void setApplicationNameProperty(String applicationNameProperty) {
+		this.applicationNameProperty = applicationNameProperty;
+	}
+
+	protected void setLocalHostAddressProperty(String localHostAddressProperty) {
+		this.localhostAddressProperty = localHostAddressProperty;
+	}
+
+	protected void setProperties(Properties properties) {
+		this.properties = properties;
+	}
+	
+	protected Properties getProperties() {
+		return properties;
+	}
 	
 	protected String getHostName() {
-		return null; //TODO
+		String hostName = null;
+		if (null != hostNameProperty) {
+			hostName = getProperties().getProperty(hostNameProperty);
+		} else {
+			try {
+				hostName = InetAddress.getLocalHost().getHostName();
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return hostName; 
 	}
 
 	protected String getApplicationName() {
-		return null; //TODO		
+		String applicationName = null;
+		if (null != applicationNameProperty) {
+			applicationName = getProperties().getProperty(applicationNameProperty);
+		} 		
+		return applicationName;		
 	}
 
-	protected String getLocalIP() {
-		return null; //TODO		
+	protected String getLocalhostAddress() {
+		String hostAddress = null;
+		if (null != localhostAddressProperty) {
+			hostAddress = getProperties().getProperty(localhostAddressProperty);
+		} else {
+			try {
+				hostAddress = InetAddress.getLocalHost().getHostAddress();
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return hostAddress; 
 	}
 
 
@@ -172,7 +298,14 @@ public class LogStashEventJSONLayout extends AbstractStringLayout {
 	@PluginFactory
 	public static LogStashEventJSONLayout createLayout(
 			@PluginAttr("charset") String charset,
-			@PluginAttr("prettyprint") String prettyprint) {
+			@PluginAttr("prettyprint") String prettyprint,
+			@PluginAttr("tags") String tags,
+			@PluginAttr("fieldProperties") String fieldProperties,
+			@PluginAttr("hostNameProperty") String hostNameProperty,
+			@PluginAttr("applicationNameProperty") String applicationNameProperty,
+			@PluginAttr("localhostAddressProperty") String localhostAddressProperty
+
+			) {
 		Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8")
 				: Charset.defaultCharset();
 		if (charset != null) {
@@ -184,12 +317,29 @@ public class LogStashEventJSONLayout extends AbstractStringLayout {
 						+ c.displayName());
 			}
 		}
-
+		
 		
 		boolean pp = (prettyprint != null && Boolean.parseBoolean(prettyprint)) ? true : false;
 
 		LogStashEventJSONLayout logStashEventJSONLayout = new LogStashEventJSONLayout(c, pp);
+		if (StringUtils.isNotBlank(hostNameProperty)) {
+			logStashEventJSONLayout.setHostNameProperty(hostNameProperty);
+		}
+		if (StringUtils.isNotBlank(applicationNameProperty)) {
+			logStashEventJSONLayout.setApplicationNameProperty(applicationNameProperty);
+		}
+		if (StringUtils.isNotBlank(localhostAddressProperty)) {
+			logStashEventJSONLayout.setLocalHostAddressProperty(localhostAddressProperty);
+		}
+
 		
+		if (StringUtils.isNotBlank(tags)) {
+			logStashEventJSONLayout.setTags(tags.split(","));
+		}
+
+		if (StringUtils.isNotBlank(fieldProperties)) {
+			logStashEventJSONLayout.setFieldProperties(fieldProperties.split(","));
+		}
 
 		
 		return logStashEventJSONLayout;

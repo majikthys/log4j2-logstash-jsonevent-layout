@@ -14,8 +14,11 @@ public class SimplifiedThrowable {
 		this.setStacktrace(ExceptionUtils.getStackTrace(throwable));
 	}
 
+	/**
+	 * Really only for tests
+	 * TODO should this be killed?
+	 */
 	protected SimplifiedThrowable() {
-		//TODO
 	}
 	
 	public String getException_class() {

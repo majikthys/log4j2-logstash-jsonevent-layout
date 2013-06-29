@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonInclude(value=JsonInclude.Include.NON_EMPTY)
+//TODO order explicitly all nodes
 public abstract class LogStashEvent {
 
 	/**
@@ -140,8 +141,10 @@ public abstract class LogStashEvent {
 
 	private static ObjectMapper mapper; 
 	static {
+		//TODO configure(Feature.ESCAPE_NON_ASCII, true);
 		mapper = new ObjectMapper();
 		mapper.setDateFormat(new SimpleDateFormat(LOG_STASH_ISO8601_TIMESTAMP_FORMAT));//Ahoy, X introduced in java 7
+		
 	}
 	
 	public static String marshallToJSON(LogStashEvent event) throws IOException {
