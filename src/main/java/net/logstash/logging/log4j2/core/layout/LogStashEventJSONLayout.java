@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -29,7 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Plugin(name = "LogStashEventJSONLayout", category = "Core", elementType = "layout", printObject = true)
 public class LogStashEventJSONLayout extends AbstractStringLayout {
-	//TODO add boolean to control introspections
 	
 	protected LogStashEventJSONLayout(Charset charset, boolean prettyPrint) {
 		super(charset);
@@ -114,6 +110,8 @@ public class LogStashEventJSONLayout extends AbstractStringLayout {
 		}
 	}
 
+	protected String DELIM = ";";
+	
 	protected void handleLocalInfo() {
 		String hostName = getHostName();
 		String type = getLogStashType();
@@ -122,7 +120,7 @@ public class LogStashEventJSONLayout extends AbstractStringLayout {
 		
 		logStashEventBuilder.setType(type);
 		logStashEventBuilder.setSourceHost(hostName);
-		logStashEventBuilder.setSource(type  + ";" + hostName + ";" + applicationName);
+		logStashEventBuilder.setSource(StringUtils.join(type,DELIM,hostName,DELIM,applicationName));
 
 		logStashEventBuilder.addField("source_address", localAddress);
 		logStashEventBuilder.addField("source_application", applicationName);
@@ -154,6 +152,7 @@ public class LogStashEventJSONLayout extends AbstractStringLayout {
 		
 		Marker marker = event.getMarker();
 		if (null != marker) {
+			//TODO perhaps marker should just serialize?
 			logStashEventBuilder.addField("marker", marker.getName());
 			//Decend Marker Hierarchy TODO ???
 			//event.getMarker().getParent()
@@ -199,6 +198,7 @@ public class LogStashEventJSONLayout extends AbstractStringLayout {
 		//Message Objects Parsing (each object) TODO
 		
 		if(null != message.getParameters() && message.getParameters().length > 0) {
+			//TODO MessageObjectsHandler Here
 			logStashEventBuilder.addField("message_parameters", message.getParameters());
 		}
 		
@@ -273,10 +273,7 @@ public class LogStashEventJSONLayout extends AbstractStringLayout {
 		} else {
 			try {
 				hostAddress = InetAddress.getLocalHost().getHostAddress();
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} catch (UnknownHostException ignore) {}//NOPMD 
 		}
 		return hostAddress; 
 	}
@@ -292,7 +289,7 @@ public class LogStashEventJSONLayout extends AbstractStringLayout {
 	
 	@Override 
 	public String getContentType() {
-		return "application/json; charset=" + this.getCharset(); //TODO is there an handy constant in core libs?
+		return "application/json; charset=" + this.getCharset(); 
 	}
 	
 	@PluginFactory

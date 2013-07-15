@@ -11,6 +11,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonInclude(value=JsonInclude.Include.NON_EMPTY)
@@ -82,6 +83,9 @@ public abstract class LogStashEvent {
 		}
 	}
 
+	public interface LOGSTASH_EVENT_JSON_KEYS {
+		public final static String FIELDS = "@fields";		
+	}
 	@JsonProperty("@fields")
 	public Map<String, Object> getFields() {
 		return fields;
@@ -141,10 +145,9 @@ public abstract class LogStashEvent {
 
 	private static ObjectMapper mapper; 
 	static {
-		//TODO configure(Feature.ESCAPE_NON_ASCII, true);
 		mapper = new ObjectMapper();
 		mapper.setDateFormat(new SimpleDateFormat(LOG_STASH_ISO8601_TIMESTAMP_FORMAT));//Ahoy, X introduced in java 7
-		
+		mapper.configure(Feature.ESCAPE_NON_ASCII, true);
 	}
 	
 	public static String marshallToJSON(LogStashEvent event) throws IOException {

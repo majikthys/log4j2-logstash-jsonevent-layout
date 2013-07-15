@@ -25,6 +25,7 @@ dependencies {
 	// Testing stuff, hamcrest comes first please 
     testCompile 'org.hamcrest:hamcrest-all:1.3'
     testCompile 'org.testng:testng:6.8.5'
+	testCompile 'commons-collections:commons-collections:3.2.1'
 }
 
 
