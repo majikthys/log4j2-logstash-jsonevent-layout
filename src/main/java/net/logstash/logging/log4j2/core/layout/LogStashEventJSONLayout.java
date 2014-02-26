@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.message.Message;
@@ -294,13 +294,13 @@ public class LogStashEventJSONLayout extends AbstractStringLayout {
 	
 	@PluginFactory
 	public static LogStashEventJSONLayout createLayout(
-			@PluginAttr("charset") String charset,
-			@PluginAttr("prettyprint") String prettyprint,
-			@PluginAttr("tags") String tags,
-			@PluginAttr("fieldProperties") String fieldProperties,
-			@PluginAttr("hostNameProperty") String hostNameProperty,
-			@PluginAttr("applicationNameProperty") String applicationNameProperty,
-			@PluginAttr("localhostAddressProperty") String localhostAddressProperty
+			@PluginAttribute("charset") String charset,
+			@PluginAttribute("prettyprint") String prettyprint,
+			@PluginAttribute("tags") String tags,
+			@PluginAttribute("fieldProperties") String fieldProperties,
+			@PluginAttribute("hostNameProperty") String hostNameProperty,
+			@PluginAttribute("applicationNameProperty") String applicationNameProperty,
+			@PluginAttribute("localhostAddressProperty") String localhostAddressProperty
 
 			) {
 		Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8")
