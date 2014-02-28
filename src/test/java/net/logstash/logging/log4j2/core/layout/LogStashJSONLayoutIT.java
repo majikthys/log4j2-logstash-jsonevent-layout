@@ -45,28 +45,28 @@ public class LogStashJSONLayoutIT {
   }
 
   
-  LogStashEventJSONLayout layout = LogStashEventJSONLayout.createLayout("UTF-8", "true", null, null, null, null, null);
+//  LogStashEventJSONLayout layout = LogStashEventJSONLayout.createLayout("UTF-8", "true", null, null, null, null, null);
 
-  //TODO make that token replacement for layout.foo() component
-  String simpleRoundTripJSON = "    {\n" + 
-  		"      \"@source\" : \"LogStashEventJSONLayout;"+ layout.getHostName() +";\",\n" + 
-  		"      \"@fields\" : {\n" + 
-  		"        \"source_address\" : \""+ layout.getLocalhostAddress() +"\",\n" + 
-  		"        \"source_application\" : null,\n" + 
-  		"        \"logger_name\" : \"net.logstash.logging.log4j2.core.layout.LogStashEventJSONLayoutIT\",\n" + 
-  		"        \"thread_name\" : \"Test worker\",\n" + 
-  		"        \"level\" : \"DEBUG\",\n" + 
-  		"        \"level_value\" : 5,\n" + 
-  		"        \"logger_fqcn\" : \"net.logstash.logging.log4j2.core.layout.LogStashEventJSONLayoutIT\",\n" + 
-  		"        \"nested_diagnostic_context\" : [ ],\n" + 
-  		"        \"message_type\" : \"SimpleMessage\",\n" + 
-  		"        \"message_formatted\" : \"Test Message\"\n" + 
-  		"      },\n" + 
-  		"      \"@source_host\" : \""+ layout.getHostName() +"\",\n" + 
-  		"      \"@timestamp\" : \"2013-06-30T09:22:12.322-07:00\",\n" + 
-  		"      \"@type\" : \"LogStashEventJSONLayout\"\n" + 
-  		"    }";
-  
+//  //TODO make that token replacement for layout.foo() component
+//  String simpleRoundTripJSON = "    {\n" + 
+//  		"      \"@source\" : \"LogStashEventJSONLayout;"+ layout.getHostName() +";\",\n" + 
+//  		"      \"@fields\" : {\n" + 
+//  		"        \"source_address\" : \""+ layout.getLocalhostAddress() +"\",\n" + 
+//  		"        \"source_application\" : null,\n" + 
+//  		"        \"logger_name\" : \"net.logstash.logging.log4j2.core.layout.LogStashEventJSONLayoutIT\",\n" + 
+//  		"        \"thread_name\" : \"Test worker\",\n" + 
+//  		"        \"level\" : \"DEBUG\",\n" + 
+//  		"        \"level_value\" : 5,\n" + 
+//  		"        \"logger_fqcn\" : \"net.logstash.logging.log4j2.core.layout.LogStashEventJSONLayoutIT\",\n" + 
+//  		"        \"nested_diagnostic_context\" : [ ],\n" + 
+//  		"        \"message_type\" : \"SimpleMessage\",\n" + 
+//  		"        \"message_formatted\" : \"Test Message\"\n" + 
+//  		"      },\n" + 
+//  		"      \"@source_host\" : \""+ layout.getHostName() +"\",\n" + 
+//  		"      \"@timestamp\" : \"2013-06-30T09:22:12.322-07:00\",\n" + 
+//  		"      \"@type\" : \"LogStashEventJSONLayout\"\n" + 
+//  		"    }";
+//  
   ObjectMapper mapper = new ObjectMapper();
 
   
