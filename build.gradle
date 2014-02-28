@@ -3,9 +3,14 @@ description = 'Log4J2 Layout for outputting LogStash json_event format'
 
 apply plugin: 'java'
 
+version='1.0.0-SNAPSHOT'
+group = 'net.logstash.log4j2'
+
 repositories {
 	mavenCentral()
 }
+
+apply from: file('gradle/maven.gradle')
 
 dependencies {
     
@@ -45,8 +50,6 @@ task integrationTest(type: Test, dependsOn: ['test']) {
 	// copy resource over???
 
 	// set a system property for the test JVM(s)
-	systemProperty 'archaius.deployment.applicationId', 'jaxrs-service'
-	systemProperty 'archaius.deployment.environment', 'dev'
 	
 	doFirst {
 		logger.info 'Logstash required for integration tests'

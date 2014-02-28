@@ -4,3 +4,4 @@ build
 .classpath
 .project
 test-output
+gradle.properties

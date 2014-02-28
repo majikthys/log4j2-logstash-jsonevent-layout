@@ -1,0 +1,13 @@
+# gradle properties only used for maven release shipping... you don't need 'em
+
+
+#######################################
+########### maven stuff ###############
+#######################################
+# private repos
+
+#releasesArtifactRepoURL=
+#snapshotsArtifactRepoURL=
+#thirdpartyArtifactRepoURL=
+#sonatypeUsername=
+#sonatypePassword=
