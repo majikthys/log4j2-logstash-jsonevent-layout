@@ -4,10 +4,7 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 
-import java.text.FieldPosition;
-import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +50,7 @@ public class LogStashJSONLayout extends JSONLayout {
     private final String indent2;
     private final String indent3;
     private final String indent4;
+    private final String eventEol;
     private volatile boolean firstLayoutDone;
     
     private final boolean excludeLogger;
@@ -74,6 +72,7 @@ public class LogStashJSONLayout extends JSONLayout {
 			final boolean properties, 
 			final boolean complete, 
 			boolean compact,
+			final boolean newline,
             final Charset charset,
 			final boolean excludeLogger, 
 			final boolean excludeLevel, 
@@ -95,6 +94,7 @@ public class LogStashJSONLayout extends JSONLayout {
         this.indent2 = this.indent1 + this.indent1;
         this.indent3 = this.indent2 + this.indent1;
         this.indent4 = this.indent3 + this.indent1;
+        this.eventEol = newline ? DEFAULT_EOL : this.eol;
         this.excludeLogger= excludeLogger;
         this.excludeLevel = excludeLevel;
         this.excludeThread = excludeThread;
@@ -133,12 +133,12 @@ public class LogStashJSONLayout extends JSONLayout {
                     this.firstLayoutDone = true;
                 } else {
                     buf.append(',');
-                    buf.append(this.eol);                                
+                    buf.append(this.eventEol);
                 }
             }
         } else {
             buf.append(',');
-            buf.append(this.eol);                                            
+            buf.append(this.eventEol);
         }
         buf.append(this.indent1);
         buf.append('{');
@@ -426,6 +426,7 @@ public class LogStashJSONLayout extends JSONLayout {
      * @param properties If "true", includes the thread context in the generated JSON.
      * @param completeStr If "true", includes the JSON header and footer, defaults to "false".
      * @param compactStr  If "true", does not use end-of-lines and indentation, defaults to "false".
+     * @param newlineStr  If "true", adds newline after each event, only applicable when compact=true, defaults to "false".
      * @param charsetName The character set to use, if {@code null}, uses "UTF-8", must be same as subLayout charset.
      * 
      * 
@@ -450,6 +451,7 @@ public class LogStashJSONLayout extends JSONLayout {
             @PluginAttribute("properties") final String properties, 
             @PluginAttribute("complete") final String completeStr,
             @PluginAttribute("compact") final String compactStr, 
+            @PluginAttribute("newline") final String newlineStr,
             @PluginAttribute("charset") final String charsetName,
             
             @PluginAttribute("excludeLogger") final String excludeLoggerStr,
@@ -473,6 +475,7 @@ public class LogStashJSONLayout extends JSONLayout {
         final boolean props = Boolean.parseBoolean(properties);
         final boolean complete = Boolean.parseBoolean(completeStr);
         final boolean compact = Boolean.parseBoolean(compactStr);
+        final boolean newline = Boolean.parseBoolean(newlineStr);
 
         final boolean excludeLogger = Boolean.parseBoolean(excludeLoggerStr);
         final boolean excludeLevel = Boolean.parseBoolean(excludeLevelStr);
@@ -513,7 +516,7 @@ public class LogStashJSONLayout extends JSONLayout {
 	        
 	        
         }
-        return new LogStashJSONLayout(info, props, complete, compact, charset, 
+        return new LogStashJSONLayout(info, props, complete, compact, newline, charset,
         		excludeLogger, excludeLevel, excludeThread, excludeMessage,
     			excludeNDC,
     			excludeThrown,
