@@ -310,6 +310,7 @@ public class LogStashJSONLayout extends JSONLayout {
         }
         
         //Log (the sublayout)
+        buf.append(",");
         buf.append(this.eol);
         buf.append(this.indent2);
         buf.append("\"log\":");
