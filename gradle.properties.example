@@ -1,13 +1,9 @@
-# gradle properties only used for maven release shipping... you don't need 'em
+# gradle properties only used for maven deployment
 
+# Here the 'name' of a repo must match the maven settings.xml server credentials necessary for authentication
+# if authentication is required
 
-#######################################
-########### maven stuff ###############
-#######################################
-# private repos
-
-#releasesArtifactRepoURL=
-#snapshotsArtifactRepoURL=
-#thirdpartyArtifactRepoURL=
-#sonatypeUsername=
-#sonatypePassword=
+releaseRepoName=
+releaseRepoURL=
+snapshotRepoName=
+snapshotRepoURL=
