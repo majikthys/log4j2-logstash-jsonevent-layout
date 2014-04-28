@@ -5,3 +5,4 @@ build
 .project
 test-output
 gradle.properties
+/bin
