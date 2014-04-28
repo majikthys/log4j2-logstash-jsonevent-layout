@@ -1,16 +1,56 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'maven-publish-auth'
 
 description = 'Log4J2 Layout for outputting LogStash json_event format'
 
 apply plugin: 'java'
 
-version='1.0.1-SNAPSHOT'
+version='1.0.2-SNAPSHOT'
 group = 'net.logstash.log4j2'
 
-repositories {
-	mavenCentral()
+buildscript {
+  dependencies {
+    classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
+  }
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
 }
 
-apply from: file('gradle/maven.gradle')
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+             if (project.version.endsWith('-SNAPSHOT')) {
+				if (project.hasProperty('snapshotRepoName')) {
+					name "${snapshotRepoName}"
+				}
+				if (project.hasProperty('snapshotRepoURL')) {
+					url "${snapshotRepoURL}"
+				}
+             } else {
+				if (project.hasProperty('releaseRepoName')) {
+	             	name "$releaseRepoName"
+				}
+				if (project.hasProperty('releaseRepoURL')) {
+	             	url "$releaseRepoURL"
+				}
+             }
+        }
+    }
+}
 
 dependencies {
     
@@ -28,8 +68,8 @@ dependencies {
 	compile 'org.apache.commons:commons-lang3:3.2.1'
 
 	// Testing stuff, hamcrest comes first please 
-    testCompile 'org.hamcrest:hamcrest-all:1.3'
-    testCompile 'org.testng:testng:6.8.5'
+	testCompile 'org.hamcrest:hamcrest-all:1.3'
+	testCompile 'org.testng:testng:6.8.5'
 	testCompile 'commons-collections:commons-collections:3.2.1'
 }
 
@@ -74,8 +114,11 @@ task integrationTest(type: Test, dependsOn: ['test']) {
 	}
 
 	doLast {
-//		logger.info 'Stop Logstash'
+//logger.info 'Stop Logstash'
 // stop logstash
 	}
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
