@@ -36,8 +36,7 @@ Example Log4j2 log4j2.xml:
        <appenders>
           <!-- logstash tcp stocket example, replace host value -->
           <Socket name="LogStashSocket" host="REPLACE_HOST_NAME" port="4560" protocol="tcp">
-    	      <LogStashJSONLayout charset="UTF-8" locationInfo="true" properties="true"
-    	      skipJsonEscapeSubLayout="false" subLayoutAsElement="false" compact="true" newline="true">
+    	      <LogStashJSONLayout>
     
     			<!-- Provide ANY type of layout to expose the message, being mindful that if -->
     			<!-- subLayoutAsElement="true", your (likely custom) Layout will need to     -->
@@ -75,7 +74,7 @@ Example logstash configuration (later we refer to this as file tcp-logstash.conf
 
     input {
       tcp {
-        codec => json { charset => "UTF-8" }
+        codec => json_line { charset => "UTF-8" }
         # 4560 is default log4j socket appender port
         port => 4560
       }
@@ -86,6 +85,7 @@ Example logstash configuration (later we refer to this as file tcp-logstash.conf
     
 
 Note, this example configuration expects port 4560 to be accessible, so make sure your firewall rules allow for this. You may of course opt to change the port to a value of your choosing, just make sure to update both logstash and log4j2 configuration.
+Note, tcp input has buffer underrun and overrun conditions that prevent use with non-line delineated codecs and therefore json codec does not work.
 
 ### Example output
 You should see in your logstash console a message like:

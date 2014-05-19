@@ -6,3 +6,4 @@ build
 test-output
 gradle.properties
 /bin
+gradle.properties.off
