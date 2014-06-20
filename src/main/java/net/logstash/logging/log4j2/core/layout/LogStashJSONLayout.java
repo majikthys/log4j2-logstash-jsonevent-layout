@@ -453,12 +453,9 @@ public class LogStashJSONLayout extends AbstractStringLayout {
                 buf.append('{');
                 buf.append(this.eol);
                 buf.append(this.indent4);
-                buf.append("\"name\":\"");
+                buf.append("\"");
                 buf.append(Transform.escapeJsonControlCharacters(entry.getKey()));
-                buf.append("\",");
-                buf.append(this.eol);
-                buf.append(this.indent4);
-                buf.append("\"value\":\"");
+                buf.append("\":,\"");
                 buf.append(Transform.escapeJsonControlCharacters(String.valueOf(entry.getValue())));
                 buf.append("\"");
                 buf.append(this.eol);
