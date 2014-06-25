@@ -408,7 +408,7 @@ public class LogStashJSONLayout extends AbstractStringLayout {
         }
 
         //LocationInfo
-        if (this.locationInfo) {
+        if (this.locationInfo && null != event.getSource()) {
             final StackTraceElement element = event.getSource();
             buf.append(COMMA);
             buf.append(this.eol);
