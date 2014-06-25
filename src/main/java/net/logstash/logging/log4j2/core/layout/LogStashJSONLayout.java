@@ -33,22 +33,22 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Charsets;
-import org.apache.logging.log4j.core.helpers.KeyValuePair;
-import org.apache.logging.log4j.core.helpers.Throwables;
-import org.apache.logging.log4j.core.helpers.Transform;
-import org.apache.logging.log4j.core.layout.JSONLayout;
+import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.core.util.Transform;
+import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
 
 /**
- * 
+ *
  * Appends a series of JSON events as strings serialized as bytes.
- * 
+ *
  * <h4>Complete well-formed JSON vs. fragment JSON</h4>
  * <p>
- * If you configure {@code complete="true"}, the appender outputs a well-formed JSON document. 
+ * If you configure {@code complete="true"}, the appender outputs a well-formed JSON document.
  * By default, with {@code complete="false"}, you should include the
  * output as an <em>external file</em> in a separate file to form a well-formed JSON document.
  * </p>
@@ -124,18 +124,18 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * By default, the JSON layout is not compact (a.k.a. not "pretty") with {@code compact="false"}, which means the
  * appender uses end-of-line characters and indents lines to format the text. If {@code compact="true"}, then no
  * end-of-line or indentation is used. Message content may contain, of course, escaped end-of-lines.
- * 
- * 
- * 
+ *
+ *
+ *
  * locationInfo  If "true", includes the location information in the generated JSON, defaults to true.
  * properties If "true", includes the thread context in the generated JSON, defaults to true.
  * complete If "true", includes the JSON header and footer, defaults to "false".
- * 
+ *
  * compact If "true", does not use end-of-lines and indentation, defaults to "true".
  * newline If "true", adds newline after each event, only applicable when compact=true, defaults to "true".
  * commaAtEventEnd If "true", adds comma after event. If new line is also true, comma appears before newline. Defaults to "false"
- * 
- * charset The character set to use, if {@code null}, uses "UTF-8", must be same as subLayout charset. 
+ *
+ * charset The character set to use, if {@code null}, uses "UTF-8", must be same as subLayout charset.
  *
  * excludeLogger If "true" excludes logger element, defaults to false;
  * excludeLevel If "true" excludes level element, defaults to false;
@@ -150,19 +150,19 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * 			only use if layout already produces escaped ing. Defaults to false;
  *  		Setting to true implies skipJsonEscapeSubLayout is "true" and overrides contradiction.
  * subLayout If omitted uses default pattern layout
- * 
- * 
+ *
+ *
  * </p>
- * 
- * Code here derived from Apache's log4j2 JSONLayout {@link org.apache.logging.log4j.core.layout.JSONLayout} 
+ *
+ * Code here derived from Apache's log4j2 JSONLayout {@link org.apache.logging.log4j.core.layout.JSONLayout}
  * and all licensing is carried forward.
- * 
+ *
  * @author jeremyfranklin-ross
  *
  */
 
 @Plugin(name = "LogStashJSONLayout", category = "Core", elementType = "layout", printObject = true)
-public class LogStashJSONLayout extends JSONLayout {
+public class LogStashJSONLayout extends AbstractStringLayout {
     private static final String COMMA = ",";
 	private static final int DEFAULT_SIZE = 256;
     //Ahoy, X introduced in java 7
@@ -206,7 +206,7 @@ public class LogStashJSONLayout extends JSONLayout {
     private Layout<? extends Serializable> subLayout;
 
     /**
-     * 
+     *
      */
 	protected LogStashJSONLayout(final boolean locationInfo,
 			final boolean properties,
@@ -226,7 +226,8 @@ public class LogStashJSONLayout extends JSONLayout {
 			final DateFormat iso8601DatePrinter,
 			final Layout<? extends Serializable> subLayout,
 			final Map<String, String> additionalLogAttributes) {
-		super(locationInfo, properties, complete, compact, charset);
+
+        super(charset);
         this.locationInfo = locationInfo;
         this.properties = properties;
         this.complete = complete;
@@ -239,7 +240,7 @@ public class LogStashJSONLayout extends JSONLayout {
         // Ahoy: Complications to pay attention to! eventSplit and eventEnd are
         // modal by complete, comma, and newline! This is because in the non-bracketed
         // list scenario, EOL is taken to be the termination of event.
-        // 
+        //
         //Complete means we're bracketing elements with open and close brackets.
         if (complete) {
         	//When complete we:
@@ -247,20 +248,20 @@ public class LogStashJSONLayout extends JSONLayout {
         	// 2: Render newline after commas if newlineAtEventEnd is or compact is false
         	// 3: Render no characters between final event and closing bracket
             this.eventSeparator = newlineAtEventEnd ? COMMA + DEFAULT_EOL : COMMA +  this.eol;
-            this.eventEnd = "";      	
+            this.eventEnd = "";
         } else {
         	//When complete is false we:
         	//1: Render after EVERY event if commaAtEventEnd is true
-        	//2: Render newline after EVERY event (following comma if present) if 
+        	//2: Render newline after EVERY event (following comma if present) if
         	//   newlineAteventEnd is true or compact is false
         	if (newlineAtEventEnd) {
                 this.eventEnd = commaAtEventEnd ? COMMA + DEFAULT_EOL : DEFAULT_EOL;
         	} else {
-                this.eventEnd = commaAtEventEnd ? COMMA +  this.eol :  this.eol;        		
+                this.eventEnd = commaAtEventEnd ? COMMA +  this.eol :  this.eol;
         	}
             this.eventSeparator = "";
         }
-        
+
         this.excludeLogger= excludeLogger;
         this.excludeLevel = excludeLevel;
         this.excludeThread = excludeThread;
@@ -318,7 +319,7 @@ public class LogStashJSONLayout extends JSONLayout {
         buf.append(this.eol);
         buf.append(this.indent2);
         buf.append("\"@timestamp\":\"");
-        buf.append(iso8601DateFormat.format(new Date(event.getMillis())));
+        buf.append(iso8601DateFormat.format(new Date(event.getTimeMillis())));
         //************ LogStash Message Elements
         //**************************************
 
@@ -575,12 +576,12 @@ public class LogStashJSONLayout extends JSONLayout {
      * @param locationInfo  If "true", includes the location information in the generated JSON, defaults to true.
      * @param properties If "true", includes the thread context in the generated JSON, defaults to true.
      * @param completeStr If "true", includes the JSON header and footer, defaults to "false".
-     * 
+     *
      * @param compactStr  If "true", does not use end-of-lines and indentation, defaults to "true".
      * @param newlineStr  If "true", adds newline after each event, only applicable when compact=true, defaults to "true".
      * @param commaAtEventEndStr If "true", adds comma after event. If new line is also true, comma appears before newline. Defaults to "false"
-     * 
-     * @param charsetName The character set to use, if {@code null}, uses "UTF-8", must be same as subLayout charset. 
+     *
+     * @param charsetName The character set to use, if {@code null}, uses "UTF-8", must be same as subLayout charset.
      *
      * @param excludeLoggerStr If "true" excludes logger element, defaults to false;
      * @param excludeLevelStr If "true" excludes level element, defaults to false;
@@ -625,15 +626,15 @@ public class LogStashJSONLayout extends JSONLayout {
 
     		) {
         final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
-        
-        
+
+
         final boolean info = (null == locationInfo) ? true : Boolean.parseBoolean(locationInfo);
         final boolean props = (null == properties) ? true: Boolean.parseBoolean(properties);
         final boolean complete = Boolean.parseBoolean(completeStr);
 
-        final boolean compact = (null == compactStr) ? true : Boolean.parseBoolean(compactStr);        
+        final boolean compact = (null == compactStr) ? true : Boolean.parseBoolean(compactStr);
         final boolean newline = (null == newlineStr) ? true : Boolean.parseBoolean(newlineStr);
-        
+
         final boolean commaAtEventEnd = Boolean.parseBoolean(commaAtEventEndStr);
         final boolean excludeLogger = Boolean.parseBoolean(excludeLoggerStr);
         final boolean excludeLevel = Boolean.parseBoolean(excludeLevelStr);
@@ -648,7 +649,7 @@ public class LogStashJSONLayout extends JSONLayout {
     	final DateFormat datePrinter = new SimpleDateFormat(LOG_STASH_ISO8601_TIMESTAMP_FORMAT);
     	 //when no layout is offered we'll go with the ol' favorite pattern
         if (subLayout == null) {
-        	subLayout = PatternLayout.createLayout(null, null, null, null, null, null);
+        	subLayout = PatternLayout.createDefaultLayout();
         }
 
         //Unpacke the pairs list
@@ -674,9 +675,9 @@ public class LogStashJSONLayout extends JSONLayout {
 
 
         }
-        
+
         /**
-         * Give some helpful feedback about funciton of configurations scenarios that may not be intuitive or 
+         * Give some helpful feedback about funciton of configurations scenarios that may not be intuitive or
          * are internally contradictory
          */
         if (complete && !commaAtEventEnd) {
@@ -690,13 +691,13 @@ public class LogStashJSONLayout extends JSONLayout {
         if (!complete && commaAtEventEnd && !newline) {
         	LOGGER.warn("comma will terminate every event element, including the last one (it does not necessarily signify another element will follow)");
         }
-        
+
         if (!complete && commaAtEventEnd && newline) {
         	LOGGER.warn("comma + newline will terminate every event element, including the last one (it does not necessarily signify another element will follow)");
         }
 
-        
-        return new LogStashJSONLayout(info, props, complete, 
+
+        return new LogStashJSONLayout(info, props, complete,
         		compact, newline, commaAtEventEnd,
         		charset,
         		excludeLogger, excludeLevel, excludeThread, excludeMessage,
