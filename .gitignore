@@ -8,3 +8,5 @@ gradle.properties
 /bin
 gradle.properties.off
 /target/
+.idea/
+*.iml
