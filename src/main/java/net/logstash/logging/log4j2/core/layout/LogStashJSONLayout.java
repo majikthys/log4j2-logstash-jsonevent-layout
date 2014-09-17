@@ -444,23 +444,17 @@ public class LogStashJSONLayout extends AbstractStringLayout {
             buf.append(COMMA);
             buf.append(this.eol);
             buf.append(this.indent2);
-            buf.append("\"Properties\":[");
+            buf.append("\"Properties\":{");
             buf.append(this.eol);
             final Set<Entry<String, String>> entrySet = event.getContextMap().entrySet();
             int i = 1;
             for (final Map.Entry<String, String> entry : entrySet) {
                 buf.append(this.indent3);
-                buf.append('{');
-                buf.append(this.eol);
-                buf.append(this.indent4);
                 buf.append("\"");
                 buf.append(Transform.escapeJsonControlCharacters(entry.getKey()));
                 buf.append("\":\"");
                 buf.append(Transform.escapeJsonControlCharacters(String.valueOf(entry.getValue())));
                 buf.append("\"");
-                buf.append(this.eol);
-                buf.append(this.indent3);
-                buf.append("}");
                 if (i < entrySet.size()) {
                     buf.append(COMMA);
                 }
@@ -468,7 +462,7 @@ public class LogStashJSONLayout extends AbstractStringLayout {
                 i++;
             }
             buf.append(this.indent2);
-            buf.append("]");
+            buf.append("}");
         }
 
         //Log (the sublayout)
