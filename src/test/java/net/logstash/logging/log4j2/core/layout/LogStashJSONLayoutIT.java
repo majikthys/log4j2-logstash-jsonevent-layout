@@ -83,6 +83,7 @@ public class LogStashJSONLayoutIT {
               null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
               null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
               null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+              null, //      @PluginAttribute("excludeLog") final String excludeLogStr,              null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
               null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
               null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
               null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -100,7 +101,7 @@ public class LogStashJSONLayoutIT {
   }
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-@Test 
+@Test
 public void TestThrowable() throws IOException {
 	  Message simpleMessage = new SimpleMessage("Throw an exception");
 
@@ -135,6 +136,7 @@ public void TestThrowable() throws IOException {
             null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
             null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
             null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+            null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
             null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
             null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
             null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -190,6 +192,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -225,7 +228,7 @@ public void TestThrowable() throws IOException {
                 "\"level\":\"DEBUG\"," +
                 "\"thread\":\"threadname.foo1\"," +
                 "\"message\":\"testPluginAttributeLocationInfo\"," +
-                "\"Properties\":[{\"CKey3\":\"CVal3\"},{\"CKey2\":\"CVal2\"},{\"CKey1\":\"CVal1\"}]," +
+                "\"Properties\":{\"CKey3\":\"CVal3\",\"CKey2\":\"CVal2\",\"CKey1\":\"CVal1\"}," +
                 "\"log\":\"testPluginAttributeLocationInfo\\n\"}";
 
         System.out.println("--- testPluginAttributeLocationInfo ---");
@@ -256,6 +259,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -303,6 +307,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -357,6 +362,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -403,6 +409,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -426,6 +433,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -449,6 +457,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -472,6 +481,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -495,6 +505,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -518,6 +529,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -541,6 +553,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -564,6 +577,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -588,6 +602,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -611,6 +626,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -634,6 +650,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -657,6 +674,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -680,6 +698,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
@@ -702,6 +721,7 @@ public void TestThrowable() throws IOException {
                 null, //      @PluginAttribute("excludeLevel") final String excludeLevelStr,
                 null, //      @PluginAttribute("excludeThread") final String excludeThreadStr,
                 null, //      @PluginAttribute("excludeMessage") final String excludeMessageStr,
+                null, //      @PluginAttribute("excludeLog") final String excludeLogStr,
                 null, //      @PluginAttribute("excludeNDC") final String excludeNDCStr,
                 null, //      @PluginAttribute("excludeThrown") final String excludeThrownStr,
                 null, //      @PluginAttribute("skipJsonEscapeSubLayout") final String skipJsonEscapeSubLayoutStr,
