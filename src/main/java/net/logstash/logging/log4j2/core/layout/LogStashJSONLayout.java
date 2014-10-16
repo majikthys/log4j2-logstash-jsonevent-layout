@@ -154,7 +154,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  *
  * </p>
  *
- * Code here derived from Apache's log4j2 JSONLayout {@link org.apache.logging.log4j.core.layout.JSONLayout}
+ * Code here derived from Apache's log4j2 JsonLayout {@link org.apache.logging.log4j.core.layout.JsonLayout}
  * and all licensing is carried forward.
  *
  * @author jeremyfranklin-ross
@@ -589,7 +589,7 @@ public class LogStashJSONLayout extends AbstractStringLayout {
      * @param skipJsonEscapeSubLayoutStr If "true" doesn't escape product of layout,
      * 			only use if layout already produces escaped string. Defaults to false;
      *  		Setting subLayoutAsElement to true implies skipJsonEscapeSubLayoutStr is "true" and overrides contradiction.
-     * @param subLayoutAsElement If "true" doesn't escape product of layout and assumes product will be an element bracketed with curly braces,
+     * @param subLayoutAsElementStr If "true" doesn't escape product of layout and assumes product will be an element bracketed with curly braces,
      * 			only use if layout already produces escaped string. Defaults to false;
      *  		Setting to true implies skipJsonEscapeSubLayoutStr is "true" and overrides contradiction.
      * @param subLayout If omitted uses default pattern layout
