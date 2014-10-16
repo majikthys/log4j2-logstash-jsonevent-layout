@@ -141,6 +141,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * excludeLevel If "true" excludes level element, defaults to false;
  * excludeThread If "true" excludes thread element, defaults to false;
  * excludeMessage If "true" excludes message element, defaults to false;
+ * excludeLog If "true" excludes log element, defaults to false;
  * excludeNDC If "true" excludes context stack aka NDC element, defaults to false;
  * excludeThrown If "true" excludes logger element, defaults to false;
  * skipJsonEscapeSubLayout If "true" doesn't escape product of layout,
@@ -194,6 +195,7 @@ public class LogStashJSONLayout extends AbstractStringLayout {
     private final boolean excludeLevel;
     private final boolean excludeThread;
     private final boolean excludeMessage;
+    private final boolean excludeLog;
     private final boolean excludeNDC;
     private final boolean excludeThrown;
 
@@ -219,6 +221,7 @@ public class LogStashJSONLayout extends AbstractStringLayout {
 			final boolean excludeLevel,
 			final boolean excludeThread,
 			final boolean excludeMessage,
+			final boolean excludeLog,
 			final boolean excludeNDC,
 			final boolean excludeThrown,
 			final boolean jsonEscapeSubLayout,
@@ -266,6 +269,7 @@ public class LogStashJSONLayout extends AbstractStringLayout {
         this.excludeLevel = excludeLevel;
         this.excludeThread = excludeThread;
         this.excludeMessage = excludeMessage;
+        this.excludeLog = excludeLog;
         this.excludeNDC = excludeNDC;
         this.excludeThrown = excludeThrown;
         if (subLayoutAsElement) {
@@ -472,28 +476,30 @@ public class LogStashJSONLayout extends AbstractStringLayout {
         }
 
         //Log (the sublayout)
-        buf.append(COMMA);
-        buf.append(this.eol);
-        buf.append(this.indent2);
-        buf.append("\"log\":");
-        buf.append(this.subLayoutBegin);
+        if (!excludeLog) {
+            buf.append(COMMA);
+            buf.append(this.eol);
+            buf.append(this.indent2);
+            buf.append("\"log\":");
+            buf.append(this.subLayoutBegin);
 
-        if (jsonEscapeSubLayout) {
-        	Serializable serializedLayoutProduct = subLayout.toSerializable(event);
-	        if (serializedLayoutProduct instanceof CharSequence) {
-	        	buf.append(Transform.escapeJsonControlCharacters(serializedLayoutProduct.toString()));
-	        } else {
-	        	buf.append(Transform.escapeJsonControlCharacters(new String(subLayout.toByteArray(event), this.getCharset())));
-	        }
-        } else {
-        	Serializable serializedLayoutProduct = subLayout.toSerializable(event);
-	        if (serializedLayoutProduct instanceof CharSequence) {
-	        	buf.append(serializedLayoutProduct.toString());
-	        } else {
-	        	buf.append(new String(subLayout.toByteArray(event), this.getCharset()));
-	        }
+            if (jsonEscapeSubLayout) {
+                Serializable serializedLayoutProduct = subLayout.toSerializable(event);
+                if (serializedLayoutProduct instanceof CharSequence) {
+                    buf.append(Transform.escapeJsonControlCharacters(serializedLayoutProduct.toString()));
+                } else {
+                    buf.append(Transform.escapeJsonControlCharacters(new String(subLayout.toByteArray(event), this.getCharset())));
+                }
+            } else {
+                Serializable serializedLayoutProduct = subLayout.toSerializable(event);
+                if (serializedLayoutProduct instanceof CharSequence) {
+                    buf.append(serializedLayoutProduct.toString());
+                } else {
+                    buf.append(new String(subLayout.toByteArray(event), this.getCharset()));
+                }
+            }
+            buf.append(this.subLayoutEnd);
         }
-        buf.append(this.subLayoutEnd);
 
         for (Entry<String,String> attributeEntry : additionalLogAttributes.entrySet()) {
             buf.append(COMMA);
