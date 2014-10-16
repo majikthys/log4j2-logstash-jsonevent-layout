@@ -7,7 +7,7 @@ description = 'Log4J2 Layout for outputting LogStash json_event format'
 
 apply plugin: 'java'
 
-version='3.0.1-SNAPSHOT'
+version='3.1.0'
 group = 'net.logstash.log4j2'
 
 buildscript {
