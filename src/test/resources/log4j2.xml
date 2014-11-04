@@ -1,43 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="DEBUG" packages="net.logstash.logging.log4j2.core.layout" verbose="false">
-  <appenders>
-    <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="CONSOLE APPENDER %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-    </Console>
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="CONSOLE APPENDER %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+		</Console>
 
-    <Console name="TestConsole2" target="SYSTEM_OUT">
-		<LogStashJSONLayout charset="UTF-8" skipJsonEscapeSubLayout="true" subLayoutAsElement="true">
+		<Console name="TestConsole2" target="SYSTEM_OUT">
+			<LogStashJSONLayout charset="UTF-8" skipJsonEscapeSubLayout="true" subLayoutAsElement="true">
 
-		<!-- Provide ANY type of layout to expose the message, being mindful that if -->
-		<!-- subLayoutAsElement="true", your (likely custom) Layout will need to     -->
-		<!-- produce a valid and escaped json element -->
-		<PatternLayout pattern="pattern::{}:: %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-		
-		<!-- Example of what you might do to add fields, warning values should be known to be json escaped strings -->
-	    <KeyValuePair key="application_name" value="super application"/>
-	    <KeyValuePair key="arbitrary_name_replace_me" value="replaceable_value"/>
+			<!-- Provide ANY type of layout to expose the message, being mindful that if -->
+			<!-- subLayoutAsElement="true", your (likely custom) Layout will need to -->
+			<!-- produce a valid and escaped json element -->
+			<PatternLayout pattern="pattern::{}:: %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+			
+			<!-- Example of what you might do to add fields, warning values should be known to be json escaped strings -->
+			<KeyValuePair key="application_name" value="super application"/>
+			<KeyValuePair key="arbitrary_name_replace_me" value="replaceable_value"/>
 
-	    <!--Example of using system property substitution -->
-	    <KeyValuePair key="application_user" value="${sys:user.name}"/>
-	    <!-- KeyValuePair key="hostame" value="${sys:user.name}"/ -->
-	    <!-- KeyValuePair key="local_ip" value="${sys:local_ip}"/ -->
-	    
-	    <!--Example of using environment property substitution  env:USERNAME on windows-->
-	    <KeyValuePair key="environment_user" value="${env:USER}"/> 
-		</LogStashJSONLayout>
-    </Console>
-    <!--AuditSyslogAppender name="AuditSysLog" format="RFC5424" host="localhost" port="514"
-            protocol="UDP" appName="TESTAPP" includeMDC="true"
-            facility="LOCAL0" enterpriseNumber="18060" newLine="true"
-            messageId="Audit" id="App"/-->
-            
-  </appenders>
-  <loggers>
-    <root level="DEBUG">
-      <appender-ref ref="Console"/>
-      <appender-ref ref="TestConsole2"/>
+			<!--Example of using system property substitution -->
+			<KeyValuePair key="application_user" value="${sys:user.name}"/>
+			<!-- KeyValuePair key="hostame" value="${sys:user.name}"/ -->
+			<!-- KeyValuePair key="local_ip" value="${sys:local_ip}"/ -->
 
-      <!--appender-ref ref="AuditSysLog"/-->
-    </root>
-  </loggers>
+			<!--Example of using environment property substitution env:USERNAME on windows-->
+			<KeyValuePair key="environment_user" value="${env:USER}"/> 
+			</LogStashJSONLayout>
+		</Console>
+		<!--
+			AuditSyslogAppender name="AuditSysLog" format="RFC5424" host="localhost" port="514"
+				protocol="UDP" appName="TESTAPP" includeMDC="true"
+				facility="LOCAL0" enterpriseNumber="18060" newLine="true"
+				messageId="Audit" id="App"/
+		-->
+	</appenders>
+	<loggers>
+		<root level="DEBUG">
+			<appender-ref ref="Console"/>
+			<appender-ref ref="TestConsole2"/>
+
+			<!--appender-ref ref="AuditSysLog"/-->
+		</root>
+	</loggers>
 </configuration>
