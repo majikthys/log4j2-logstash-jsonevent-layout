@@ -47,7 +47,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  *
  * Appends a series of JSON events as strings serialized as bytes.
  *
- * <h4>Complete well-formed JSON vs. fragment JSON</h4>
+ * <b>Complete well-formed JSON vs. fragment JSON</b>
  * <p>
  * If you configure {@code complete="true"}, the appender outputs a well-formed JSON document.
  * By default, with {@code complete="false"}, you should include the
@@ -58,54 +58,54 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * </p>
  * <pre>[
  *{
- *               "@version" => "1",
- *             "@timestamp" => "2014-05-19T16:09:26.239-04:00",
- *                 "logger" => "com.liaison.service.resource.examples.LogStashExampleTest",
- *                  "level" => "ERROR",
- *                 "thread" => "Test worker",
- *                "message" => "Going on right here1",
- *           "LocationInfo" => {
- *         "class" => "com.liaison.service.resource.examples.LogStashExampleTest",
- *        "method" => "testLogStashLogs",
- *          "file" => "LogStashExampleTest.java",
- *          "line" => "16"
+ *               "@version" =&gt; "1",
+ *             "@timestamp" =&gt; "2014-05-19T16:09:26.239-04:00",
+ *                 "logger" =&gt; "com.liaison.service.resource.examples.LogStashExampleTest",
+ *                  "level" =&gt; "ERROR",
+ *                 "thread" =&gt; "Test worker",
+ *                "message" =&gt; "Going on right here1",
+ *           "LocationInfo" =&gt; {
+ *         "class" =&gt; "com.liaison.service.resource.examples.LogStashExampleTest",
+ *        "method" =&gt; "testLogStashLogs",
+ *          "file" =&gt; "LogStashExampleTest.java",
+ *          "line" =&gt; "16"
  *    },
- *                    "log" => "THIS BLOCK IS ARBITRARY FORMAT 13:09:26.239 [Test worker] ERROR com.liaison.service.resource.examples.LogStashExampleTest - Going on right here1",
- *       "environment_type" => "${sys:deploy_env}",
- *           "cluster_name" => "example cluster name",
- *       "cluster_location" => "${sys:cluster_location}",
- *       "application_name" => "${sys:application.name}",
- *       "application_user" => "jeremyfranklin-ross",
- *    "application_version" => "${sys:application.version}",
- *               "hostname" => "${sys:hostname}",
- *       "environment_user" => "jeremyfranklin-ross",
- *                "host_ip" => "${sys:host_ip}",
- *                   "host" => "10.10.87.16:54027"
+ *                    "log" =&gt; "THIS BLOCK IS ARBITRARY FORMAT 13:09:26.239 [Test worker] ERROR com.liaison.service.resource.examples.LogStashExampleTest - Going on right here1",
+ *       "environment_type" =&gt; "${sys:deploy_env}",
+ *           "cluster_name" =&gt; "example cluster name",
+ *       "cluster_location" =&gt; "${sys:cluster_location}",
+ *       "application_name" =&gt; "${sys:application.name}",
+ *       "application_user" =&gt; "jeremyfranklin-ross",
+ *    "application_version" =&gt; "${sys:application.version}",
+ *               "hostname" =&gt; "${sys:hostname}",
+ *       "environment_user" =&gt; "jeremyfranklin-ross",
+ *                "host_ip" =&gt; "${sys:host_ip}",
+ *                   "host" =&gt; "10.10.87.16:54027"
  *},
  *{
- *               "@version" => "1",
- *             "@timestamp" => "2014-05-19T16:09:26.256-04:00",
- *                 "logger" => "com.liaison.service.resource.examples.LogStashExampleTest",
- *                  "level" => "ERROR",
- *                 "thread" => "Test worker",
- *                "message" => "Going on right here2",
- *           "LocationInfo" => {
- *         "class" => "com.liaison.service.resource.examples.LogStashExampleTest",
- *        "method" => "testLogStashLogs",
- *          "file" => "LogStashExampleTest.java",
- *          "line" => "18"
+ *               "@version" =&gt; "1",
+ *             "@timestamp" =&gt; "2014-05-19T16:09:26.256-04:00",
+ *                 "logger" =&gt; "com.liaison.service.resource.examples.LogStashExampleTest",
+ *                  "level" =&gt; "ERROR",
+ *                 "thread" =&gt; "Test worker",
+ *                "message" =&gt; "Going on right here2",
+ *           "LocationInfo" =&gt; {
+ *         "class" =&gt; "com.liaison.service.resource.examples.LogStashExampleTest",
+ *        "method" =&gt; "testLogStashLogs",
+ *          "file" =&gt; "LogStashExampleTest.java",
+ *          "line" =&gt; "18"
  *    },
- *                    "log" => "THIS BLOCK IS ARBITRARY FORMAT 13:09:26.256 [Test worker] ERROR com.liaison.service.resource.examples.LogStashExampleTest - Going on right here2",
- *       "environment_type" => "${sys:deploy_env}",
- *           "cluster_name" => "example cluster name",
- *       "cluster_location" => "${sys:cluster_location}",
- *       "application_name" => "${sys:application.name}",
- *       "application_user" => "jeremyfranklin-ross",
- *    "application_version" => "${sys:application.version}",
- *               "hostname" => "${sys:hostname}",
- *       "environment_user" => "jeremyfranklin-ross",
- *                "host_ip" => "${sys:host_ip}",
- *                   "host" => "10.10.87.16:54027"
+ *                    "log" =&gt; "THIS BLOCK IS ARBITRARY FORMAT 13:09:26.256 [Test worker] ERROR com.liaison.service.resource.examples.LogStashExampleTest - Going on right here2",
+ *       "environment_type" =&gt; "${sys:deploy_env}",
+ *           "cluster_name" =&gt; "example cluster name",
+ *       "cluster_location" =&gt; "${sys:cluster_location}",
+ *       "application_name" =&gt; "${sys:application.name}",
+ *       "application_user" =&gt; "jeremyfranklin-ross",
+ *    "application_version" =&gt; "${sys:application.version}",
+ *               "hostname" =&gt; "${sys:hostname}",
+ *       "environment_user" =&gt; "jeremyfranklin-ross",
+ *                "host_ip" =&gt; "${sys:host_ip}",
+ *                   "host" =&gt; "10.10.87.16:54027"
  *}
  * ]</pre>
  * <p>
@@ -115,12 +115,12 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * <p>
  * This approach enforces the independence of the JSONLayout and the appender where you embed it.
  * </p>
- * <h4>Encoding</h4>
+ * <b>Encoding</b>
  * <p>
  * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
  * events containing non ASCII characters could result in corrupted log files.
  * </p>
- * <h4>Pretty vs. compact XML</h4>
+ * <b>Pretty vs. compact XML</b>
  * <p>
  * By default, the JSON layout is not compact (a.k.a. not "pretty") with {@code compact="false"}, which means the
  * appender uses end-of-line characters and indents lines to format the text. If {@code compact="true"}, then no
@@ -568,10 +568,11 @@ public class LogStashJSONLayout extends AbstractStringLayout {
 
     /**
      * XMLLayout's content format is specified by:
-     * <p/>
+     * <p>
      * Key: "dtd" Value: "log4j-events.dtd"
-     * <p/>
+     * </p><p>
      * Key: "version" Value: "2.0"
+     * </p>
      *
      * @return Map of content format keys supporting XMLLayout
      */
