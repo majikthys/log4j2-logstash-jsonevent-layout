@@ -129,5 +129,5 @@ task integrationTest(type: Test, dependsOn: ['test']) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
+    gradleVersion = '2.2.1'
 }
