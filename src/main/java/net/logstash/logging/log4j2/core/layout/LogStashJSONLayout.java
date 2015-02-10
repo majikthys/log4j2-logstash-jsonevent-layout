@@ -423,7 +423,7 @@ public class LogStashJSONLayout extends AbstractStringLayout {
             final List<String> list = Throwables.toStringList(throwable);
             for (final String str : list) {
                 buf.append(Transform.escapeJsonControlCharacters(str));
-                buf.append("\\\\n");
+                buf.append("\\n");
             }
             buf.append("\"");
         }
