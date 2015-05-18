@@ -62,7 +62,7 @@ publishing {
 
 dependencies {
 
-	def log4j2Version = '2.+';
+	def log4j2Version = '2.3+';
 	compile "org.apache.logging.log4j:log4j-api:$log4j2Version"
 	compile "org.apache.logging.log4j:log4j-core:$log4j2Version"
 

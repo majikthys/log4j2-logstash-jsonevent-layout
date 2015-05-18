@@ -19,29 +19,30 @@ package net.logstash.logging.log4j2.core.layout;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Map.Entry;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.layout.AbstractStringLayout;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.core.util.Transform;
-import org.apache.logging.log4j.core.layout.AbstractStringLayout;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
+
+import static org.apache.logging.log4j.core.util.Constants.UTF_8;
 
 /**
  *
@@ -649,8 +650,8 @@ public class LogStashJSONLayout extends AbstractStringLayout {
             @PluginElement("Pairs") final KeyValuePair[] pairs
 
     		) {
-        final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
 
+        final Charset charset = (charsetName == null || charsetName.isEmpty()) ? UTF_8: Charset.forName(charsetName);
 
         final boolean info = (null == locationInfo) ? true : Boolean.parseBoolean(locationInfo);
         final boolean props = (null == properties) ? true: Boolean.parseBoolean(properties);
