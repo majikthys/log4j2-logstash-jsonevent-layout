@@ -19,34 +19,34 @@ package net.logstash.logging.log4j2.core.layout;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Map.Entry;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.layout.AbstractStringLayout;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.core.util.Transform;
-import org.apache.logging.log4j.core.layout.AbstractStringLayout;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
 
+import static org.apache.logging.log4j.core.util.Constants.UTF_8;
+
 /**
- *
  * Appends a series of JSON events as strings serialized as bytes.
- *
+ * <p>
  * <b>Complete well-formed JSON vs. fragment JSON</b>
  * <p>
  * If you configure {@code complete="true"}, the appender outputs a well-formed JSON document.
@@ -57,7 +57,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * A {@code complete="true} {@code compact=false} well-formed JSON document follows this pattern:
  * </p>
  * <pre>[
- *{
+ * {
  *               "@version" =&gt; "1",
  *             "@timestamp" =&gt; "2014-05-19T16:09:26.239-04:00",
  *                 "logger" =&gt; "com.liaison.service.resource.examples.LogStashExampleTest",
@@ -81,8 +81,8 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  *       "environment_user" =&gt; "jeremyfranklin-ross",
  *                "host_ip" =&gt; "${sys:host_ip}",
  *                   "host" =&gt; "10.10.87.16:54027"
- *},
- *{
+ * },
+ * {
  *               "@version" =&gt; "1",
  *             "@timestamp" =&gt; "2014-05-19T16:09:26.256-04:00",
  *                 "logger" =&gt; "com.liaison.service.resource.examples.LogStashExampleTest",
@@ -106,7 +106,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  *       "environment_user" =&gt; "jeremyfranklin-ross",
  *                "host_ip" =&gt; "${sys:host_ip}",
  *                   "host" =&gt; "10.10.87.16:54027"
- *}
+ * }
  * ]</pre>
  * <p>
  * If {@code complete="false"}, the appender does not write the JSON open array character "[" at the start of the document.
@@ -125,19 +125,19 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * By default, the JSON layout is not compact (a.k.a. not "pretty") with {@code compact="false"}, which means the
  * appender uses end-of-line characters and indents lines to format the text. If {@code compact="true"}, then no
  * end-of-line or indentation is used. Message content may contain, of course, escaped end-of-lines.
- *
- *
- *
+ * <p>
+ * <p>
+ * <p>
  * locationInfo  If "true", includes the location information in the generated JSON, defaults to true.
  * properties If "true", includes the thread context in the generated JSON, defaults to true.
  * complete If "true", includes the JSON header and footer, defaults to "false".
- *
+ * <p>
  * compact If "true", does not use end-of-lines and indentation, defaults to "true".
  * newline If "true", adds newline after each event, only applicable when compact=true, defaults to "true".
  * commaAtEventEnd If "true", adds comma after event. If new line is also true, comma appears before newline. Defaults to "false"
- *
+ * <p>
  * charset The character set to use, if {@code null}, uses "UTF-8", must be same as subLayout charset.
- *
+ * <p>
  * excludeLogger If "true" excludes logger element, defaults to false;
  * excludeLevel If "true" excludes level element, defaults to false;
  * excludeThread If "true" excludes thread element, defaults to false;
@@ -146,30 +146,29 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * excludeNDC If "true" excludes context stack aka NDC element, defaults to false;
  * excludeThrown If "true" excludes logger element, defaults to false;
  * skipJsonEscapeSubLayout If "true" doesn't escape product of layout,
- * 			only use if layout already produces escaped ing. Defaults to false;
- *  		Setting subLayoutAsElement to true implies skipJsonEscapeSubLayout is "true" and overrides contradiction.
+ * only use if layout already produces escaped ing. Defaults to false;
+ * Setting subLayoutAsElement to true implies skipJsonEscapeSubLayout is "true" and overrides contradiction.
  * subLayoutAsElement If "true" doesn't escape product of layout and assumes product will be an element bracketed with curly braces,
- * 			only use if layout already produces escaped ing. Defaults to false;
- *  		Setting to true implies skipJsonEscapeSubLayout is "true" and overrides contradiction.
+ * only use if layout already produces escaped ing. Defaults to false;
+ * Setting to true implies skipJsonEscapeSubLayout is "true" and overrides contradiction.
  * subLayout If omitted uses default pattern layout
- *
- *
+ * <p>
+ * <p>
  * </p>
- *
+ * <p>
  * Code here derived from Apache's log4j2 JsonLayout {@link org.apache.logging.log4j.core.layout.JsonLayout}
  * and all licensing is carried forward.
  *
  * @author jeremyfranklin-ross
- *
  */
 
 @Plugin(name = "LogStashJSONLayout", category = "Core", elementType = "layout", printObject = true)
 public class LogStashJSONLayout extends AbstractStringLayout {
     private static final String COMMA = ",";
-	private static final int DEFAULT_SIZE = 256;
+    private static final int DEFAULT_SIZE = 256;
     //Ahoy, X introduced in java 7
-    public static final String LOG_STASH_ISO8601_TIMESTAMP_FORMAT ="yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
-	protected final DateFormat iso8601DateFormat;
+    public static final String LOG_STASH_ISO8601_TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+    protected final DateFormat iso8601DateFormat;
 
 
     // We yield to \r\n for the default.
@@ -178,7 +177,7 @@ public class LogStashJSONLayout extends AbstractStringLayout {
     private static final String DEFAULT_INDENT = "  ";
     private static final String COMPACT_INDENT = "";
 
-    private static final String[] FORMATS = new String[] { "json" };
+    private static final String[] FORMATS = new String[]{"json"};
 
     private final boolean locationInfo;
     private final boolean properties;
@@ -211,25 +210,25 @@ public class LogStashJSONLayout extends AbstractStringLayout {
     /**
      *
      */
-	protected LogStashJSONLayout(final boolean locationInfo,
-			final boolean properties,
-			final boolean complete,
-			final boolean compact,
-			final boolean newlineAtEventEnd,
-			final boolean commaAtEventEnd,
-            final Charset charset,
-			final boolean excludeLogger,
-			final boolean excludeLevel,
-			final boolean excludeThread,
-			final boolean excludeMessage,
-			final boolean excludeLog,
-			final boolean excludeNDC,
-			final boolean excludeThrown,
-			final boolean jsonEscapeSubLayout,
-			final boolean subLayoutAsElement,
-			final DateFormat iso8601DatePrinter,
-			final Layout<? extends Serializable> subLayout,
-			final Map<String, String> additionalLogAttributes) {
+    protected LogStashJSONLayout(final boolean locationInfo,
+                                 final boolean properties,
+                                 final boolean complete,
+                                 final boolean compact,
+                                 final boolean newlineAtEventEnd,
+                                 final boolean commaAtEventEnd,
+                                 final Charset charset,
+                                 final boolean excludeLogger,
+                                 final boolean excludeLevel,
+                                 final boolean excludeThread,
+                                 final boolean excludeMessage,
+                                 final boolean excludeLog,
+                                 final boolean excludeNDC,
+                                 final boolean excludeThrown,
+                                 final boolean jsonEscapeSubLayout,
+                                 final boolean subLayoutAsElement,
+                                 final DateFormat iso8601DatePrinter,
+                                 final Layout<? extends Serializable> subLayout,
+                                 final Map<String, String> additionalLogAttributes) {
 
         super(charset);
         this.locationInfo = locationInfo;
@@ -247,26 +246,26 @@ public class LogStashJSONLayout extends AbstractStringLayout {
         //
         //Complete means we're bracketing elements with open and close brackets.
         if (complete) {
-        	//When complete we:
-        	// 1: Render comma following all but last event
-        	// 2: Render newline after commas if newlineAtEventEnd is or compact is false
-        	// 3: Render no characters between final event and closing bracket
-            this.eventSeparator = newlineAtEventEnd ? COMMA + DEFAULT_EOL : COMMA +  this.eol;
+            //When complete we:
+            // 1: Render comma following all but last event
+            // 2: Render newline after commas if newlineAtEventEnd is or compact is false
+            // 3: Render no characters between final event and closing bracket
+            this.eventSeparator = newlineAtEventEnd ? COMMA + DEFAULT_EOL : COMMA + this.eol;
             this.eventEnd = "";
         } else {
-        	//When complete is false we:
-        	//1: Render after EVERY event if commaAtEventEnd is true
-        	//2: Render newline after EVERY event (following comma if present) if
-        	//   newlineAteventEnd is true or compact is false
-        	if (newlineAtEventEnd) {
+            //When complete is false we:
+            // 1: Render after EVERY event if commaAtEventEnd is true
+            // 2: Render newline after EVERY event (following comma if present) if
+            //    newlineAteventEnd is true or compact is false
+            if (newlineAtEventEnd) {
                 this.eventEnd = commaAtEventEnd ? COMMA + DEFAULT_EOL : DEFAULT_EOL;
-        	} else {
-                this.eventEnd = commaAtEventEnd ? COMMA +  this.eol :  this.eol;
-        	}
+            } else {
+                this.eventEnd = commaAtEventEnd ? COMMA + this.eol : this.eol;
+            }
             this.eventSeparator = "";
         }
 
-        this.excludeLogger= excludeLogger;
+        this.excludeLogger = excludeLogger;
         this.excludeLevel = excludeLevel;
         this.excludeThread = excludeThread;
         this.excludeMessage = excludeMessage;
@@ -274,23 +273,23 @@ public class LogStashJSONLayout extends AbstractStringLayout {
         this.excludeNDC = excludeNDC;
         this.excludeThrown = excludeThrown;
         if (subLayoutAsElement) {
-        	this.subLayoutBegin = "{" + this.eol + this.indent3;
-        	this.subLayoutEnd = this.indent2+"}";
+            this.subLayoutBegin = "{" + this.eol + this.indent3;
+            this.subLayoutEnd = this.indent2 + "}";
             this.jsonEscapeSubLayout = false;
         } else {
-        	this.subLayoutBegin = "\"";
-        	this.subLayoutEnd = "\"";
+            this.subLayoutBegin = "\"";
+            this.subLayoutEnd = "\"";
             this.jsonEscapeSubLayout = jsonEscapeSubLayout;
         }
         this.iso8601DateFormat = iso8601DatePrinter;
         this.subLayout = subLayout;
         this.additionalLogAttributes = additionalLogAttributes;
-	}
+    }
+
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
      *
-     * @param event
-     *            The LogEvent.
+     * @param event The LogEvent.
      * @return The XML representation of the LogEvent.
      */
     @Override
@@ -299,7 +298,7 @@ public class LogStashJSONLayout extends AbstractStringLayout {
         // DC locking to avoid synchronizing the whole layout.
         boolean check = this.firstLayoutDone;
         if (!this.firstLayoutDone) {
-            synchronized(this) {
+            synchronized (this) {
                 check = this.firstLayoutDone;
                 if (!check) {
                     this.firstLayoutDone = true;
@@ -331,61 +330,61 @@ public class LogStashJSONLayout extends AbstractStringLayout {
 
         //Logger
         if (!excludeLogger) {
-	        buf.append("\",");
-	        buf.append(this.eol);
-	        buf.append(this.indent2);
-	        buf.append("\"logger\":\"");
-	        String name = event.getLoggerName();
-	        if (name.isEmpty()) {
-	            name = "root";
-	        }
-	        buf.append(Transform.escapeJsonControlCharacters(name));
+            buf.append("\",");
+            buf.append(this.eol);
+            buf.append(this.indent2);
+            buf.append("\"logger\":\"");
+            String name = event.getLoggerName();
+            if (name.isEmpty()) {
+                name = "root";
+            }
+            buf.append(Transform.escapeJsonControlCharacters(name));
         }
 
         //Level
-        if(!excludeLevel) {
-	        buf.append("\",");
-	        buf.append(this.eol);
-	        buf.append(this.indent2);
-	        buf.append("\"level\":\"");
-	        buf.append(Transform.escapeJsonControlCharacters(String.valueOf(event.getLevel())));
+        if (!excludeLevel) {
+            buf.append("\",");
+            buf.append(this.eol);
+            buf.append(this.indent2);
+            buf.append("\"level\":\"");
+            buf.append(Transform.escapeJsonControlCharacters(String.valueOf(event.getLevel())));
         }
 
         //Thread
         if (!excludeThread) {
-	        buf.append("\",");
-	        buf.append(this.eol);
-	        buf.append(this.indent2);
-	        buf.append("\"thread\":\"");
-	        buf.append(Transform.escapeJsonControlCharacters(event.getThreadName()));
+            buf.append("\",");
+            buf.append(this.eol);
+            buf.append(this.indent2);
+            buf.append("\"thread\":\"");
+            buf.append(Transform.escapeJsonControlCharacters(event.getThreadName()));
         }
 
         //Message
         if (!excludeMessage) {
-	        buf.append("\",");
-	        buf.append(this.eol);
+            buf.append("\",");
+            buf.append(this.eol);
 
-	        final Message msg = event.getMessage();
-	        if (msg != null) {
-	            boolean jsonSupported = false;
-	            if (msg instanceof MultiformatMessage) {
-	                final String[] formats = ((MultiformatMessage) msg).getFormats();
-	                for (final String format : formats) {
-	                    if (format.equalsIgnoreCase("JSON")) {
-	                        jsonSupported = true;
-	                        break;
-	                    }
-	                }
-	            }
-	            buf.append(this.indent2);
-	            buf.append("\"message\":\"");
-	            if (jsonSupported) {
-	                buf.append(((MultiformatMessage) msg).getFormattedMessage(FORMATS));
-	            } else {
-	                buf.append(Transform.escapeJsonControlCharacters(event.getMessage().getFormattedMessage()));
-	            }
-	            buf.append('\"');
-	        }
+            final Message msg = event.getMessage();
+            if (msg != null) {
+                boolean jsonSupported = false;
+                if (msg instanceof MultiformatMessage) {
+                    final String[] formats = ((MultiformatMessage) msg).getFormats();
+                    for (final String format : formats) {
+                        if (format.equalsIgnoreCase("JSON")) {
+                            jsonSupported = true;
+                            break;
+                        }
+                    }
+                }
+                buf.append(this.indent2);
+                buf.append("\"message\":\"");
+                if (jsonSupported) {
+                    buf.append(((MultiformatMessage) msg).getFormattedMessage(FORMATS));
+                } else {
+                    buf.append(Transform.escapeJsonControlCharacters(event.getMessage().getFormattedMessage()));
+                }
+                buf.append('\"');
+            }
         }
 
         //NDC
@@ -467,7 +466,7 @@ public class LogStashJSONLayout extends AbstractStringLayout {
             buf.append(this.indent2);
             buf.append("\"Properties\":{");
             buf.append(this.eol);
-            final Iterator<Entry<String,String>> entrySet = event.getContextMap().entrySet().iterator();
+            final Iterator<Entry<String, String>> entrySet = event.getContextMap().entrySet().iterator();
             Map.Entry<String, String> entry = entrySet.next();
             buf.append(this.indent3);
             buf.append("\"");
@@ -476,7 +475,7 @@ public class LogStashJSONLayout extends AbstractStringLayout {
             buf.append(Transform.escapeJsonControlCharacters(String.valueOf(entry.getValue())));
             buf.append("\"");
 
-            while(entrySet.hasNext()) {
+            while (entrySet.hasNext()) {
                 entry = entrySet.next();
                 buf.append(COMMA);
                 buf.append(this.eol);
@@ -518,10 +517,10 @@ public class LogStashJSONLayout extends AbstractStringLayout {
             buf.append(this.subLayoutEnd);
         }
 
-        for (Entry<String,String> attributeEntry : additionalLogAttributes.entrySet()) {
+        for (Entry<String, String> attributeEntry : additionalLogAttributes.entrySet()) {
             buf.append(COMMA);
             buf.append(this.eol);
-	        buf.append(this.indent2);
+            buf.append(this.indent2);
             buf.append("\"");
             buf.append(attributeEntry.getKey());
             buf.append("\":\"");
@@ -594,30 +593,27 @@ public class LogStashJSONLayout extends AbstractStringLayout {
     /**
      * Creates an XML Layout.
      *
-     * @param locationInfo  If "true", includes the location information in the generated JSON, defaults to true.
-     * @param properties If "true", includes the thread context in the generated JSON, defaults to true.
-     * @param completeStr If "true", includes the JSON header and footer, defaults to "false".
-     *
-     * @param compactStr  If "true", does not use end-of-lines and indentation, defaults to "true".
-     * @param newlineStr  If "true", adds newline after each event, only applicable when compact=true, defaults to "true".
-     * @param commaAtEventEndStr If "true", adds comma after event. If new line is also true, comma appears before newline. Defaults to "false"
-     *
-     * @param charsetName The character set to use, if {@code null}, uses "UTF-8", must be same as subLayout charset.
-     *
-     * @param excludeLoggerStr If "true" excludes logger element, defaults to false;
-     * @param excludeLevelStr If "true" excludes level element, defaults to false;
-     * @param excludeThreadStr If "true" excludes thread element, defaults to false;
-     * @param excludeMessageStr If "true" excludes message element, defaults to false;
-     * @param excludeLogStr If "true" excludes log element, defaults to false;
-     * @param excludeNDCStr If "true" excludes context stack aka NDC element, defaults to false;
-     * @param excludeThrownStr If "true" excludes logger element, defaults to false;
+     * @param locationInfo               If "true", includes the location information in the generated JSON, defaults to true.
+     * @param properties                 If "true", includes the thread context in the generated JSON, defaults to true.
+     * @param completeStr                If "true", includes the JSON header and footer, defaults to "false".
+     * @param compactStr                 If "true", does not use end-of-lines and indentation, defaults to "true".
+     * @param newlineStr                 If "true", adds newline after each event, only applicable when compact=true, defaults to "true".
+     * @param commaAtEventEndStr         If "true", adds comma after event. If new line is also true, comma appears before newline. Defaults to "false"
+     * @param charsetName                The character set to use, if {@code null}, uses "UTF-8", must be same as subLayout charset.
+     * @param excludeLoggerStr           If "true" excludes logger element, defaults to false;
+     * @param excludeLevelStr            If "true" excludes level element, defaults to false;
+     * @param excludeThreadStr           If "true" excludes thread element, defaults to false;
+     * @param excludeMessageStr          If "true" excludes message element, defaults to false;
+     * @param excludeLogStr              If "true" excludes log element, defaults to false;
+     * @param excludeNDCStr              If "true" excludes context stack aka NDC element, defaults to false;
+     * @param excludeThrownStr           If "true" excludes logger element, defaults to false;
      * @param skipJsonEscapeSubLayoutStr If "true" doesn't escape product of layout,
-     * 			only use if layout already produces escaped string. Defaults to false;
-     *  		Setting subLayoutAsElement to true implies skipJsonEscapeSubLayoutStr is "true" and overrides contradiction.
-     * @param subLayoutAsElementStr If "true" doesn't escape product of layout and assumes product will be an element bracketed with curly braces,
-     * 			only use if layout already produces escaped string. Defaults to false;
-     *  		Setting to true implies skipJsonEscapeSubLayoutStr is "true" and overrides contradiction.
-     * @param subLayout If omitted uses default pattern layout
+     *                                   only use if layout already produces escaped string. Defaults to false;
+     *                                   Setting subLayoutAsElement to true implies skipJsonEscapeSubLayoutStr is "true" and overrides contradiction.
+     * @param subLayoutAsElementStr      If "true" doesn't escape product of layout and assumes product will be an element bracketed with curly braces,
+     *                                   only use if layout already produces escaped string. Defaults to false;
+     *                                   Setting to true implies skipJsonEscapeSubLayoutStr is "true" and overrides contradiction.
+     * @param subLayout                  If omitted uses default pattern layout
      * @return JSON layout of logevent, with modification to conform to logstash event json schema and element produced by subLayout
      */
     @PluginFactory
@@ -648,12 +644,12 @@ public class LogStashJSONLayout extends AbstractStringLayout {
             @PluginElement("Layout") Layout<? extends Serializable> subLayout,
             @PluginElement("Pairs") final KeyValuePair[] pairs
 
-    		) {
-        final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
+    ) {
 
+        final Charset charset = (charsetName == null || charsetName.isEmpty()) ? UTF_8 : Charset.forName(charsetName);
 
         final boolean info = (null == locationInfo) ? true : Boolean.parseBoolean(locationInfo);
-        final boolean props = (null == properties) ? true: Boolean.parseBoolean(properties);
+        final boolean props = (null == properties) ? true : Boolean.parseBoolean(properties);
         final boolean complete = Boolean.parseBoolean(completeStr);
 
         final boolean compact = (null == compactStr) ? true : Boolean.parseBoolean(compactStr);
@@ -667,37 +663,36 @@ public class LogStashJSONLayout extends AbstractStringLayout {
         final boolean excludeLog = Boolean.parseBoolean(excludeLogStr);
 
         final boolean excludeNDC = Boolean.parseBoolean(excludeNDCStr);
-		final boolean excludeThrown = Boolean.parseBoolean(excludeThrownStr);
+        final boolean excludeThrown = Boolean.parseBoolean(excludeThrownStr);
         final boolean jsonEscapeSubLayout = !Boolean.parseBoolean(skipJsonEscapeSubLayoutStr);
         final boolean subLayoutAsElement = Boolean.parseBoolean(subLayoutAsElementStr);
 
         //Note, FasterDateFormat does not support XXX timezone yet.
-    	final DateFormat datePrinter = new SimpleDateFormat(LOG_STASH_ISO8601_TIMESTAMP_FORMAT);
-    	 //when no layout is offered we'll go with the ol' favorite pattern
+        final DateFormat datePrinter = new SimpleDateFormat(LOG_STASH_ISO8601_TIMESTAMP_FORMAT);
+        //when no layout is offered we'll go with the ol' favorite pattern
         if (subLayout == null) {
-        	subLayout = PatternLayout.createDefaultLayout();
+            subLayout = PatternLayout.createDefaultLayout();
         }
 
         //Unpacke the pairs list
         final Map<String, String> additionalLogAttributes = new HashMap<String, String>();
         if (pairs != null && pairs.length > 0) {
-	        for (final KeyValuePair pair : pairs) {
-	            final String key = pair.getKey();
-	            if (key == null) {
-	                LOGGER.error("A null key is not valid in MapFilter");
-	                continue;
-	            }
-	            final String value = pair.getValue();
-	            if (value == null) {
-	                LOGGER.error("A null value for key " + key + " is not allowed in MapFilter");
-	                continue;
-	            }
-	            if (additionalLogAttributes.containsKey(key)) {
-	            	LOGGER.error("Duplicate entry for key: {} is forbidden!", key);
-	            }
+            for (final KeyValuePair pair : pairs) {
+                final String key = pair.getKey();
+                if (key == null) {
+                    LOGGER.error("A null key is not valid in MapFilter");
+                    continue;
+                }
+                final String value = pair.getValue();
+                if (value == null) {
+                    LOGGER.error("A null value for key " + key + " is not allowed in MapFilter");
+                    continue;
+                }
+                if (additionalLogAttributes.containsKey(key)) {
+                    LOGGER.error("Duplicate entry for key: {} is forbidden!", key);
+                }
                 additionalLogAttributes.put(key, value);
-	        }
-
+            }
 
 
         }
@@ -707,39 +702,38 @@ public class LogStashJSONLayout extends AbstractStringLayout {
          * are internally contradictory
          */
         if (complete && !commaAtEventEnd) {
-        	LOGGER.warn("Because complete is true commas will be present between each element even though commaAtEventEnd is false");
+            LOGGER.warn("Because complete is true commas will be present between each element even though commaAtEventEnd is false");
         }
 
         if (complete && !compact && !newline) {
-        	LOGGER.warn("Because complete is true and compact is false, there will be newlines between each event element even through newline is false");
+            LOGGER.warn("Because complete is true and compact is false, there will be newlines between each event element even through newline is false");
         }
 
         if (!complete && commaAtEventEnd && !newline) {
-        	LOGGER.warn("comma will terminate every event element, including the last one (it does not necessarily signify another element will follow)");
+            LOGGER.warn("comma will terminate every event element, including the last one (it does not necessarily signify another element will follow)");
         }
 
         if (!complete && commaAtEventEnd && newline) {
-        	LOGGER.warn("comma + newline will terminate every event element, including the last one (it does not necessarily signify another element will follow)");
+            LOGGER.warn("comma + newline will terminate every event element, including the last one (it does not necessarily signify another element will follow)");
         }
 
 
         return new LogStashJSONLayout(info, props, complete,
-        		compact, newline, commaAtEventEnd,
-        		charset,
-        		excludeLogger,
+                compact, newline, commaAtEventEnd,
+                charset,
+                excludeLogger,
                 excludeLevel,
                 excludeThread,
                 excludeMessage,
                 excludeLog,
-    			excludeNDC,
-    			excludeThrown,
-        		jsonEscapeSubLayout,
-        		subLayoutAsElement,
-        		datePrinter,
-        		subLayout,
-        		additionalLogAttributes);
+                excludeNDC,
+                excludeThrown,
+                jsonEscapeSubLayout,
+                subLayoutAsElement,
+                datePrinter,
+                subLayout,
+                additionalLogAttributes);
     }
-
 
 
 }

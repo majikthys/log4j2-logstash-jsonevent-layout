@@ -11,18 +11,18 @@ version='3.1.1-SNAPSHOT'
 group = 'net.logstash.log4j2'
 
 buildscript {
-  dependencies {
-    classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
-  }
-  repositories {
-    mavenLocal()
-    mavenCentral()
-  }
+    dependencies {
+        classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
 }
 
 repositories {
-  mavenLocal()
-  mavenCentral()
+    mavenLocal()
+    mavenCentral()
 }
 
 publishing {
@@ -41,93 +41,90 @@ publishing {
     }
     repositories {
         maven {
-             if (project.version.endsWith('-SNAPSHOT')) {
-				if (project.hasProperty('snapshotRepoName')) {
-					name "${snapshotRepoName}"
-				}
-				if (project.hasProperty('snapshotRepoURL')) {
-					url "${snapshotRepoURL}"
-				}
-             } else {
-				if (project.hasProperty('releaseRepoName')) {
-	             	name "$releaseRepoName"
-				}
-				if (project.hasProperty('releaseRepoURL')) {
-	             	url "$releaseRepoURL"
-				}
-             }
+            if (project.version.endsWith('-SNAPSHOT')) {
+                if (project.hasProperty('snapshotRepoName')) {
+                    name "${snapshotRepoName}"
+                }
+                if (project.hasProperty('snapshotRepoURL')) {
+                    url "${snapshotRepoURL}"
+                }
+            } else {
+                if (project.hasProperty('releaseRepoName')) {
+                    name "$releaseRepoName"
+                }
+                if (project.hasProperty('releaseRepoURL')) {
+                    url "$releaseRepoURL"
+                }
+            }
         }
     }
 }
 
 dependencies {
 
-	def log4j2Version = '2.+';
-	compile "org.apache.logging.log4j:log4j-api:$log4j2Version"
-	compile "org.apache.logging.log4j:log4j-core:$log4j2Version"
+    def log4j2Version = '2.3+';
+    compile "org.apache.logging.log4j:log4j-api:$log4j2Version"
+    compile "org.apache.logging.log4j:log4j-core:$log4j2Version"
 
-	// Testing stuff, hamcrest comes first please
-	testCompile 'org.hamcrest:hamcrest-all:1.+'
-	testCompile 'org.testng:testng:6.+'
-	testCompile 'commons-collections:commons-collections:3.+'
+    // Testing stuff, hamcrest comes first please
+    testCompile 'org.hamcrest:hamcrest-all:1.+'
+    testCompile 'org.testng:testng:6.+'
+    testCompile 'commons-collections:commons-collections:3.+'
 
-	// JACKSON for JSONification
-	def jacksonVersion = '2.+'
-	testCompile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
-	testCompile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
-	testCompile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    // JACKSON for JSONification
+    def jacksonVersion = '2.+'
+    testCompile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    testCompile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+    testCompile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 
     //This JSON Hamcrest Matcher is pretty useful (https://github.com/hertzsprung/hamcrest-json)
     testCompile 'uk.co.datumedge:hamcrest-json:0.+'
-
 }
 
 
-task sourcesJar(type: Jar, dependsOn:classes) {
-     classifier = 'sources'
-     from sourceSets.main.allSource
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar, dependsOn:javadoc) {
-     classifier = 'javadoc'
-     from javadoc.destinationDir
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
 }
 
 artifacts {
-     archives sourcesJar
-     archives javadocJar
+    archives sourcesJar
+    archives javadocJar
 }
-
 
 
 test {
-	useTestNG() {
-		excludeGroups 'integration'
-	}
-
+    useTestNG() {
+        excludeGroups 'integration'
+    }
 }
 
 task integrationTest(type: Test, dependsOn: ['test']) {
-	logger.info 'Integration Tests'
-	useTestNG() {
-	}
-	include '**/*IT.class'
+    logger.info 'Integration Tests'
+    useTestNG() {
+    }
+    include '**/*IT.class'
 
-	// copy resource over???
+    // copy resource over???
 
-	// set a system property for the test JVM(s)
+    // set a system property for the test JVM(s)
 
-	doFirst {
-		logger.info 'Logstash required for integration tests'
-//  start logstash or check for logstash and fail
-	}
+    doFirst {
+        logger.info 'Logstash required for integration tests'
+        //  start logstash or check for logstash and fail
+    }
 
-	doLast {
-//logger.info 'Stop Logstash'
-// stop logstash
-	}
+    doLast {
+        //logger.info 'Stop Logstash'
+        // stop logstash
+    }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.2.1'
+    gradleVersion = '2.4'
 }
