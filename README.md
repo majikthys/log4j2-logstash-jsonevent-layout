@@ -1,5 +1,7 @@
-log4j2-logstash-jsonevent-layout
-================================
+[![Circle CI](https://circleci.com/gh/jdavis7257/log4j2-logstash-jsonevent-layout.svg?style=svg)](https://circleci.com/gh/jdavis7257/log4j2-logstash-jsonevent-layout)
+log4j2-logstash-jsonevent-layout 
+================================ 
+
 
 Log4J2 Layout as a Logstash "json_event"
 
