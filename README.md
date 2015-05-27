@@ -74,7 +74,7 @@ Example logstash configuration (later we refer to this as file tcp-logstash.conf
 
     input {
       tcp {
-        codec => json_line { charset => "UTF-8" }
+        codec => json_lines { charset => "UTF-8" }
         # 4560 is default log4j socket appender port
         port => 4560
       }
