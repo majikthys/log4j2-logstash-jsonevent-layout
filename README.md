@@ -32,17 +32,12 @@ Log4j2 is configured to connect to logstash via a TCP by using a standard Socket
 Example Log4j2 log4j2.xml:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <configuration status="DEBUG" packages="net.logstash.logging.log4j2.core.layout" verbose="false">
+    <configuration status="DEBUG" packages="org.apache.logging.log4j.core.layout" verbose="false">
        <appenders>
           <!-- logstash tcp stocket example, replace host value -->
           <Socket name="LogStashSocket" host="REPLACE_HOST_NAME" port="4560" protocol="tcp">
     	      <LogStashJSONLayout>
-    
-    			<!-- Provide ANY type of layout to expose the message, being mindful that if -->
-    			<!-- subLayoutAsElement="true", your (likely custom) Layout will need to     -->
-    			<!-- produce a valid and escaped json element -->
-    			<PatternLayout pattern="THIS BLOCK IS ARBITRARY FORMAT %d{HH:mm:ss.SSS} [%t] %level %logger{36} - %msg"/>
-    			
+        			
     			<!-- Example of what you might do to add fields, warning values should be known to be json escaped strings -->
     		    <KeyValuePair key="application_name" value="${sys:application.name}"/>
     		    <KeyValuePair key="application_version" value="${sys:application.version}"/>
@@ -91,29 +86,22 @@ Note, tcp input has buffer underrun and overrun conditions that prevent use with
 You should see in your logstash console a message like:
 
     {
-                   "@version" => "1",
-                 "@timestamp" => "2014-04-29T14:21:14.988-07:00",
-                     "logger" => "com.liaison.service.resource.examples.LogStashExampleTest",
-                      "level" => "ERROR",
-                     "thread" => "Test worker",
-                    "message" => "Going on right here",
-               "LocationInfo" => {
-             "class" => "com.liaison.service.resource.examples.LogStashExampleTest",
-            "method" => "testLogStashLogs",
-              "file" => "LogStashExampleTest.java",
-              "line" => "15"
-        },
-                        "log" => "THIS BLOCK IS ARBITRARY FORMAT 14:21:14.988 [Test worker] ERROR com.liaison.service.resource.examples.LogStashExampleTest - Going on right here",
-           "environment_type" => "${sys:deploy_env}",
-               "cluster_name" => "example cluster name",
-           "cluster_location" => "${sys:cluster_location}",
-           "application_name" => "${sys:application.name}",
-           "application_user" => "jeremyfranklin-ross",
-        "application_version" => "${sys:application.version}",
-                   "hostname" => "${sys:hostname}",
-           "environment_user" => "jeremyfranklin-ross",
-                    "host_ip" => "${sys:host_ip}",
-                       "host" => "10.211.55.2:53051"
+      "@version" : "1",
+      "@timestamp" : "2015-07-28T15:24:53.386-07:00",
+      "timeMillis" : 1438122293386,
+      "thread" : "main",
+      "level" : "DEBUG",
+      "loggerName" : "org.apache.logging.log4j.core.layout.LogStashJSONLayoutJacksonIT",
+      "message" : "Test Message",
+      "endOfBatch" : false,
+      "loggerFqcn" : "org.apache.logging.log4j.core.layout.LogStashJSONLayoutJacksonIT",
+      "contextMap" : [ {
+        "key" : "Foo",
+        "value" : "Bar"
+      }, {
+        "key" : "A",
+        "value" : "B"
+      } ]
     }
 
 #### Look out for malformed messages
