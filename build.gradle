@@ -7,7 +7,7 @@ description = 'Log4J2 Layout for outputting LogStash json_event format'
 
 apply plugin: 'java'
 
-version='3.1.2-SNAPSHOT'
+version='4.0.0'
 group = 'net.logstash.log4j2'
 
 buildscript {
@@ -62,7 +62,7 @@ publishing {
 
 dependencies {
 
-    def log4j2Version = '2.3+';
+    def log4j2Version = '2.+';
     compile "org.apache.logging.log4j:log4j-api:$log4j2Version"
     compile "org.apache.logging.log4j:log4j-core:$log4j2Version"
 
@@ -72,10 +72,14 @@ dependencies {
     testCompile 'commons-collections:commons-collections:3.+'
 
     // JACKSON for JSONification
-    def jacksonVersion = '2.+'
-    testCompile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
-    testCompile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
-    testCompile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    def jacksonVersion = '2.3.+'
+    compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    compile "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:${jacksonVersion}"
+    compile "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:${jacksonVersion}"
+    compile "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
+
 
     //This JSON Hamcrest Matcher is pretty useful (https://github.com/hertzsprung/hamcrest-json)
     testCompile 'uk.co.datumedge:hamcrest-json:0.+'
