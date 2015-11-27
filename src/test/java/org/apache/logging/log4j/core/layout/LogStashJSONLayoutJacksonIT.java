@@ -1,25 +1,22 @@
 package org.apache.logging.log4j.core.layout;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
@@ -63,7 +60,7 @@ public class LogStashJSONLayoutJacksonIT {
                     "\"contextMap\":[{\"key\":\"Foo\",\"value\":\"Bar\"},{\"key\":\"A\",\"value\":\"B\"}]}";
 
     @Test
-    public void BasicSimpleTest() throws JsonParseException, JsonMappingException, IOException {
+    public void BasicSimpleTest() throws Exception {
         Message simpleMessage = new SimpleMessage("Test Message");
 
         Map<String,String>  mdc =     new HashMap<String,String>();
@@ -95,7 +92,7 @@ public class LogStashJSONLayoutJacksonIT {
         );
 
         String actualJSON = layout.toSerializable(event);
-System.out.println(actualJSON);
+        System.out.println(actualJSON);
         assertThat(actualJSON, sameJSONAs(expectedBasicSimpleTestJSON)
                 .allowingExtraUnexpectedFields()
                 .allowingAnyArrayOrdering());

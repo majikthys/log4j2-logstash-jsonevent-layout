@@ -14,16 +14,16 @@
         <PatternLayout pattern="pattern::{}:: %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
 
         <!-- Example of what you might do to add fields, warning values should be known to be json escaped strings -->
-        <KeyValuePair key="application_name" value="super application"/>
-        <KeyValuePair key="arbitrary_name_replace_me" value="replaceable_value"/>
+        <!--<KeyValuePair key="application_name" value="super application"/>-->
+        <!--<KeyValuePair key="arbitrary_name_replace_me" value="replaceable_value"/>-->
 
         <!-- Example of using system property substitution -->
-        <KeyValuePair key="application_user" value="${sys:user.name}"/>
+        <!--<KeyValuePair key="application_user" value="${sys:user.name}"/>-->
         <!--<KeyValuePair key="hostame" value="${sys:user.name}"/> -->
         <!--<KeyValuePair key="local_ip" value="${sys:local_ip}"/> -->
 
         <!-- Example of using environment property substitution  env:USERNAME on windows -->
-        <KeyValuePair key="environment_user" value="${env:USER}"/>
+        <!--<KeyValuePair key="environment_user" value="${env:USER}"/>-->
       </LogStashJSONLayout>
     </Console>
     <!--<AuditSyslogAppender name="AuditSysLog" format="RFC5424" host="localhost" port="514"
