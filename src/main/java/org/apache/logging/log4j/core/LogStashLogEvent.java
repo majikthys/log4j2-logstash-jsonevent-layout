@@ -1,16 +1,16 @@
 package org.apache.logging.log4j.core;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.util.StdConverter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
 
 /**
  * To serialize with mixin AND add two properties (@version and @timestamp) we
@@ -118,6 +118,11 @@ public class LogStashLogEvent implements LogEvent{
     @Override
     public void setIncludeLocation(boolean locationRequired) {
         wrappedLogEvent.setIncludeLocation(locationRequired);
+    }
+
+    @Override
+    public long getNanoTime() {
+        return wrappedLogEvent.getNanoTime();
     }
 
     /**
