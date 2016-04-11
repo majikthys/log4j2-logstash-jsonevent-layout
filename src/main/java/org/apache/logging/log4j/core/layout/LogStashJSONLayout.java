@@ -43,7 +43,6 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
 
     static final String CONTENT_TYPE = "application/json";
 
-    private static final long serialVersionUID = 1L;
     private static final Map<String, String> additionalLogAttributes = new HashMap<String, String>();
 
     protected LogStashJSONLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
