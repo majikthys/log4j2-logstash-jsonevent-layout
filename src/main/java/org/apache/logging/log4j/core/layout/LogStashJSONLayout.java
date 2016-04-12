@@ -161,7 +161,7 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
      * @return A JSON Layout.
      */
     public static AbstractJacksonLayout createDefaultLayout() {
-        return new LogStashJSONLayout(false, false, false, false, false, UTF_8, new HashMap<>());
+        return new LogStashJSONLayout(false, false, false, false, false, UTF_8, new HashMap<String,String>());
     }
 
     /**
