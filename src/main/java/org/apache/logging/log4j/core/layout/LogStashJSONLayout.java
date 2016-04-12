@@ -17,7 +17,9 @@
 package org.apache.logging.log4j.core.layout;
 
 
+import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -164,6 +166,9 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
         return new LogStashJSONLayout(false, false, false, false, false, UTF_8, new HashMap<>());
     }
 
+    //Toggle so that we only error once for bad context map.
+    private boolean canIssueBadContextMapError = true;
+
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent}.
      *
@@ -172,7 +177,15 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        event.getContextMap().putAll(additionalLogAttributes);
+        if (event.getContextMap() == null || Modifier.isAbstract(event.getContextMap().getClass().getModifiers()) || event.getContextMap().getClass() == Collections.EMPTY_MAP.getClass()) {
+            if (canIssueBadContextMapError) {
+                canIssueBadContextMapError = false;
+                LOGGER.error("You will only see this error once. No ContextMap set for LogEvent {}", event.toString());
+            }
+        } else {
+            event.getContextMap().putAll(additionalLogAttributes);
+        }
+
         try {
             return this.objectWriter.writeValueAsString(event) + eol;
         } catch (final JsonProcessingException e) {
