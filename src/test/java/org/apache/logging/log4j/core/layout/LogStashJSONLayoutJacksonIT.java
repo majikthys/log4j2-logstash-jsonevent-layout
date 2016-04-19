@@ -98,5 +98,90 @@ public class LogStashJSONLayoutJacksonIT {
                 .allowingAnyArrayOrdering());
 
     }
+    String expectedEmptyMDCTestJSON = "{\"@version\":\"1\"," +
+            // "\"@timestamp\":\"2015-07-28T11:31:18.492-07:00\",\"timeMillis\":1438108278492," +
+            "\"thread\":\""+ Thread.currentThread().getName() +"\"," +
+            "\"level\":\"DEBUG\"," +
+            "\"loggerName\":\"org.apache.logging.log4j.core.layout.LogStashJSONLayoutJacksonIT\"," +
+            "\"message\":\"Test Message\"," +
+            "\"endOfBatch\":false," +
+            "\"loggerFqcn\":\"org.apache.logging.log4j.core.layout.LogStashJSONLayoutJacksonIT\"}";
+
+    @Test
+    public void EmptyMDCTest() throws Exception {
+        Message simpleMessage = new SimpleMessage("Test Message");
+
+        Map<String,String>  mdc =     new HashMap<String,String>();
+
+        Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
+          builder.setLoggerName(logger.getName());
+          builder.setLoggerFqcn(this.getClass().getCanonicalName());
+          builder.setLevel(Level.DEBUG);
+          builder.setMessage(simpleMessage);
+          builder.setContextMap(mdc);
+          builder.setThreadName(Thread.currentThread().getName());
+          builder.setTimeMillis(System.currentTimeMillis());
+        LogEvent event = builder.build();
+
+         AbstractJacksonLayout layout = LogStashJSONLayout.createLayout(
+                 new DefaultConfiguration(),
+                 true, //locationInfo
+                 true, //properties
+                 false, //propertiesAsList
+                 true, //complete
+                 false, //compact
+                 false, //eventEol
+                 "[", //header
+                 "]", //footer
+                 Charset.defaultCharset(),
+                 new KeyValuePair[]{new KeyValuePair("Foo", "Bar")}
+         );
+
+        String actualJSON = layout.toSerializable(event);
+        System.out.println(actualJSON);
+        assertThat(actualJSON, sameJSONAs(expectedEmptyMDCTestJSON)
+                .allowingExtraUnexpectedFields()
+                .allowingAnyArrayOrdering());
+
+    }
+
+    @Test
+    public void NullMDCTest() throws Exception {
+        Message simpleMessage = new SimpleMessage("Test Message");
+
+        Map<String,String>  mdc = null;
+
+        Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
+          builder.setLoggerName(logger.getName());
+          builder.setLoggerFqcn(this.getClass().getCanonicalName());
+          builder.setLevel(Level.DEBUG);
+          builder.setMessage(simpleMessage);
+          builder.setContextMap(mdc);
+          builder.setThreadName(Thread.currentThread().getName());
+          builder.setTimeMillis(System.currentTimeMillis());
+        LogEvent event = builder.build();
+
+         AbstractJacksonLayout layout = LogStashJSONLayout.createLayout(
+                 new DefaultConfiguration(),
+                 true, //locationInfo
+                 true, //properties
+                 false, //propertiesAsList
+                 true, //complete
+                 false, //compact
+                 false, //eventEol
+                 "[", //header
+                 "]", //footer
+                 Charset.defaultCharset(),
+                 new KeyValuePair[]{new KeyValuePair("Foo", "Bar")}
+         );
+
+        String actualJSON = layout.toSerializable(event);
+        System.out.println(actualJSON);
+        assertThat(actualJSON, sameJSONAs(expectedEmptyMDCTestJSON)
+                .allowingExtraUnexpectedFields()
+                .allowingAnyArrayOrdering());
+
+    }
+
 
 }

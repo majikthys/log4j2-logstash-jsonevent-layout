@@ -26,6 +26,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.LogStashLogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -209,9 +210,17 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        event.getContextMap().putAll(additionalLogAttributes);
+        //convert event to a LogStashLogEvent, if needed, so that we know we can write to contextMap
+        LogStashLogEvent logStashLogEvent;
+        if (event instanceof LogStashLogEvent) {
+            logStashLogEvent = (LogStashLogEvent) event;
+        } else {
+            logStashLogEvent = new LogStashLogEvent(event);
+        }
+        logStashLogEvent.getContextMap().putAll(additionalLogAttributes);
+
         try {
-            return this.objectWriter.writeValueAsString(event) + eol;
+            return this.objectWriter.writeValueAsString(logStashLogEvent) + eol;
         } catch (final JsonProcessingException e) {
             // Should this be an ISE or IAE?
             LOGGER.error(e);

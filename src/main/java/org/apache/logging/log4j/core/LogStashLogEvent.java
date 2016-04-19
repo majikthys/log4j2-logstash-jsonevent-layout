@@ -3,6 +3,7 @@ package org.apache.logging.log4j.core;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.util.StdConverter;
@@ -27,8 +28,12 @@ public class LogStashLogEvent implements LogEvent{
 
     private LogEvent wrappedLogEvent;
 
+    private Map<String,String> contextMap = new HashMap<String,String>();
+
+
     public LogStashLogEvent(LogEvent wrappedLogEvent) {
         this.wrappedLogEvent = wrappedLogEvent;
+        contextMap.putAll(wrappedLogEvent.getContextMap());
     }
 
     public String getVersion() {
@@ -41,7 +46,7 @@ public class LogStashLogEvent implements LogEvent{
 
     @Override
     public Map<String, String> getContextMap() {
-        return wrappedLogEvent.getContextMap();
+        return contextMap;
     }
 
     @Override
