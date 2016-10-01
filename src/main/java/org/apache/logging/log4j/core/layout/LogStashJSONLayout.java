@@ -18,19 +18,21 @@ package org.apache.logging.log4j.core.layout;
 
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.util.Strings;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Copy Pasta version of JsonLayout that uses a different JSON writer which adds
@@ -41,14 +43,23 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Plugin(name = "LogStashJSONLayout", category = "Core", elementType = "layout", printObject = true)
 public class LogStashJSONLayout extends AbstractJacksonLayout {
 
+    private static final String DEFAULT_FOOTER = "]";
+
+    private static final String DEFAULT_HEADER = "[";
+
     static final String CONTENT_TYPE = "application/json";
 
     private static final Map<String, String> additionalLogAttributes = new HashMap<String, String>();
 
-    protected LogStashJSONLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
-                                 boolean eventEol, final Charset charset, final Map<String, String> additionalLogAttributes) {
+    protected LogStashJSONLayout(final Configuration config, final boolean locationInfo, final boolean properties,
+            final boolean encodeThreadContextAsList,
+            final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
+            final String footerPattern, final Charset charset, final Map<String, String> additionalLogAttributes) {
+        super(config, new LogStashJacksonFactory.JSON(encodeThreadContextAsList).newWriter(locationInfo, properties, compact),
+                charset, compact, complete, eventEol,
+                PatternLayout.createSerializer(config, null, headerPattern, DEFAULT_HEADER, null, false, false),
+                PatternLayout.createSerializer(config, null, footerPattern, DEFAULT_FOOTER, null, false, false));
 
-        super(new LogStashJacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact, complete, eventEol);
         this.additionalLogAttributes.putAll(additionalLogAttributes);
     }
 
@@ -63,7 +74,10 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
             return null;
         }
         final StringBuilder buf = new StringBuilder();
-        buf.append('[');
+        final String str = serializeToString(getHeaderSerializer());
+        if (str != null) {
+            buf.append(str);
+        }
         buf.append(this.eol);
         return getBytes(buf.toString());
     }
@@ -78,12 +92,19 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
         if (!this.complete) {
             return null;
         }
-        return getBytes(this.eol + ']' + this.eol);
+        final StringBuilder buf = new StringBuilder();
+        buf.append(this.eol);
+        final String str = serializeToString(getFooterSerializer());
+        if (str != null) {
+            buf.append(str);
+        }
+        buf.append(this.eol);
+        return getBytes(buf.toString());
     }
 
     @Override
     public Map<String, String> getContentFormat() {
-        final Map<String, String> result = new HashMap<String, String>();
+        final Map<String, String> result = new HashMap<>();
         result.put("version", "2.0");
         return result;
     }
@@ -98,35 +119,51 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
 
     /**
      * Creates a JSON Layout.
-     *
+     * @param config
+     *           The plugin configuration.
      * @param locationInfo
-     *        If "true", includes the location information in the generated JSON.
+     *            If "true", includes the location information in the generated JSON.
      * @param properties
-     *        If "true", includes the thread context in the generated JSON.
+     *            If "true", includes the thread context map in the generated JSON.
+     * @param propertiesAsList
+     *            If true, the thread context map is included as a list of map entry objects, where each entry has
+     *            a "key" attribute (whose value is the key) and a "value" attribute (whose value is the value).
+     *            Defaults to false, in which case the thread context map is included as a simple map of key-value
+     *            pairs.
      * @param complete
-     *        If "true", includes the JSON header and footer, defaults to "false".
+     *            If "true", includes the JSON header and footer, and comma between records.
      * @param compact
-     *        If "true", does not use end-of-lines and indentation, defaults to "false".
+     *            If "true", does not use end-of-lines and indentation, defaults to "false".
      * @param eventEol
-     *        If "true", forces an EOL after each log event (even if compact is "true"), defaults to "false". This
-     *        allows one even per line, even in compact mode.
+     *            If "true", forces an EOL after each log event (even if compact is "true"), defaults to "false". This
+     *            allows one even per line, even in compact mode.
+     * @param headerPattern
+     *            The header pattern, defaults to {@code "["} if null.
+     * @param footerPattern
+     *            The header pattern, defaults to {@code "]"} if null.
      * @param charset
-     *        The character set to use, if {@code null}, uses "UTF-8".
+     *            The character set to use, if {@code null}, uses "UTF-8".
+     * @param pairs
+     *            Additional KeyValue Pairs
      * @return A JSON Layout.
      */
     @PluginFactory
     public static AbstractJacksonLayout createLayout(
             // @formatter:off
+            @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
             @PluginAttribute(value = "properties", defaultBoolean = false) final boolean properties,
+            @PluginAttribute(value = "propertiesAsList", defaultBoolean = false) final boolean propertiesAsList,
             @PluginAttribute(value = "complete", defaultBoolean = false) final boolean complete,
             @PluginAttribute(value = "compact", defaultBoolean = false) final boolean compact,
             @PluginAttribute(value = "eventEol", defaultBoolean = false) final boolean eventEol,
+            @PluginAttribute(value = "header", defaultString = DEFAULT_HEADER) final String headerPattern,
+            @PluginAttribute(value = "footer", defaultString = DEFAULT_FOOTER) final String footerPattern,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
             @PluginElement("Pairs") final KeyValuePair[] pairs
             // @formatter:on
     ) {
-
+        final boolean encodeThreadContextAsList = properties && propertiesAsList;
 
         //Unpacke the pairs list
         final Map<String, String> additionalLogAttributes = new HashMap<String, String>();
@@ -150,18 +187,18 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
 
         }
 
-
-        return new LogStashJSONLayout(locationInfo, properties, complete, compact, eventEol, charset, additionalLogAttributes);
-
+        return new LogStashJSONLayout(config, locationInfo, properties, encodeThreadContextAsList, complete, compact, eventEol,
+                headerPattern, footerPattern, charset, additionalLogAttributes);
     }
 
     /**
-     * Creates a JSON Layout using the default settings.
+     * Creates a JSON Layout using the default settings. Useful for testing.
      *
      * @return A JSON Layout.
      */
     public static AbstractJacksonLayout createDefaultLayout() {
-        return new LogStashJSONLayout(false, false, false, false, false, UTF_8, new HashMap<String,String>());
+        return new LogStashJSONLayout(new DefaultConfiguration(), false, false, false, false, false, false,
+                DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8, new HashMap<String,String>());
     }
 
     /**
@@ -181,7 +218,4 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
             return Strings.EMPTY;
         }
     }
-
-
-
 }

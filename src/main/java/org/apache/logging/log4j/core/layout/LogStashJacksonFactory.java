@@ -15,8 +15,13 @@ import java.util.Set;
  *
  * Created by jeremyfranklin-ross on 7/27/15.
  */
-abstract  class LogStashJacksonFactory extends JacksonFactory {
+abstract class LogStashJacksonFactory extends JacksonFactory {
         static class JSON extends JacksonFactory.JSON {
+
+            public JSON(final boolean encodeThreadContextAsList) {
+                super(encodeThreadContextAsList);
+            }
+
             @Override
             protected ObjectMapper newObjectMapper() {
                 return new LogStashLog4jJsonObjectMapper();

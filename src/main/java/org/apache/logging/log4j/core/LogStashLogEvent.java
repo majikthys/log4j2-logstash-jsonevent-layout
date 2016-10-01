@@ -90,6 +90,16 @@ public class LogStashLogEvent implements LogEvent{
     }
 
     @Override
+    public int getThreadPriority() {
+        return wrappedLogEvent.getThreadPriority();
+    }
+
+    @Override
+    public long getThreadId() {
+        return wrappedLogEvent.getThreadId();
+    }
+
+    @Override
     public Throwable getThrown() {
         return wrappedLogEvent.getThrown();
     }

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
@@ -66,27 +67,26 @@ public class LogStashJSONLayoutJacksonIT {
         Map<String,String>  mdc =     new HashMap<String,String>();
         mdc.put("A","B");//Already some threadcontext
 
-        LogEvent event = new Log4jLogEvent(
-                logger.getName(),
-                null,
-                this.getClass().getCanonicalName(),
-                Level.DEBUG,
-                simpleMessage,
-                null,
-                mdc,
-                null,
-                Thread.currentThread().getName(),
-                null,
-                System.currentTimeMillis()
-                );
-
+       Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
+         builder.setLoggerName(logger.getName());
+         builder.setLoggerFqcn(this.getClass().getCanonicalName());
+         builder.setLevel(Level.DEBUG);
+         builder.setMessage(simpleMessage);
+         builder.setContextMap(mdc);
+         builder.setThreadName(Thread.currentThread().getName());
+         builder.setTimeMillis(System.currentTimeMillis());
+       LogEvent event = builder.build();
 
         AbstractJacksonLayout layout = LogStashJSONLayout.createLayout(
-                true, //location
+                new DefaultConfiguration(),
+                true, //locationInfo
                 true, //properties
+                false, //propertiesAsList
                 true, //complete
                 false, //compact
                 false, //eventEol
+                "[", //header
+                "]", //footer
                 Charset.defaultCharset(),
                 new KeyValuePair[]{new KeyValuePair("Foo", "Bar")}
         );
