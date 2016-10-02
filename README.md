@@ -36,7 +36,7 @@ Example Log4j2 log4j2.xml:
        <appenders>
           <!-- logstash tcp stocket example, replace host value -->
           <Socket name="LogStashSocket" host="REPLACE_HOST_NAME" port="4560" protocol="tcp">
-    	      <LogStashJSONLayout>
+    	      <LogStashJSONLayout compact="true" eventEol="true">
         			
     			<!-- Example of what you might do to add fields, warning values should be known to be json escaped strings -->
     		    <KeyValuePair key="application_name" value="${sys:application.name}"/>
@@ -69,7 +69,7 @@ Example logstash configuration (later we refer to this as file tcp-logstash.conf
 
     input {
       tcp {
-        codec => json_line { charset => "UTF-8" }
+        codec => json_lines { charset => "UTF-8" }
         # 4560 is default log4j socket appender port
         port => 4560
       }
