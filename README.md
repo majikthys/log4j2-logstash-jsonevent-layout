@@ -1,5 +1,7 @@
-log4j2-logstash-jsonevent-layout
-================================
+[![Circle CI](https://circleci.com/gh/jdavis7257/log4j2-logstash-jsonevent-layout.svg?style=svg)](https://circleci.com/gh/jdavis7257/log4j2-logstash-jsonevent-layout)
+log4j2-logstash-jsonevent-layout 
+================================ 
+
 
 Log4J2 Layout as a Logstash "json_event"
 
@@ -69,7 +71,7 @@ Example logstash configuration (later we refer to this as file tcp-logstash.conf
 
     input {
       tcp {
-        codec => json_line { charset => "UTF-8" }
+        codec => json_lines { charset => "UTF-8" }
         # 4560 is default log4j socket appender port
         port => 4560
       }
