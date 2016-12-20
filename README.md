@@ -1,13 +1,18 @@
-log4j2-logstash-jsonevent-layout
-================================
+log4j2-CustomJSONLayout
+=======================
 
-Log4J2 Layout as a Logstash "json_event"
+Log4J2 Layout
 
-Note: Currently alpha: under active development and review. Input and contributions most welcome!
+Note: Currently alpha: under active development and review. 
+Input and contributions most welcome!
 
 # Overview
 
-This is a log4j2 layout that produces json that is compliant to logstash v1 spec. JSON produced is a serialization of a given log4j2 LogEvent and is intentionally very similar to that produced by the default log4j2 [JSONLayout](http://logging.apache.org/log4j/2.x/manual/layouts.html). You may use this layout out of the box to connect your java application to a logstash server with maximal speed and minimal redundant processing.
+This is a log4j2 layout that produces json that is compliant to logstash v1 spec. 
+JSON produced is a serialization of a given log4j2 LogEvent and is intentionally very similar to 
+that produced by the default log4j2 [JSONLayout](http://logging.apache.org/log4j/2.x/manual/layouts.html). 
+You may use this layout out of the box to connect your java application to a logstash server with maximal speed 
+and minimal redundant processing.
 
 This layout is fast, flexible, and other superlatives starting with f. 
 
@@ -18,7 +23,9 @@ Sorry! Until we have a maven repository you'll have to build it yourself! I'm wo
 
 # Getting Started
 
-You'll need an application that uses [log4j2](http://logging.apache.org/) and an install of [logstash](http://logstash.net/). Explaining these perquisites is an exercise left for the reader, but we'll provide you a configuration sample.
+You'll need an application that uses [log4j2](http://logging.apache.org/) and an install of [logstash](http://logstash.net/). 
+Explaining these perquisites is an exercise left for the reader, 
+but we'll provide you a configuration sample.
 
 (see http://logging.apache.org/ and http://logstash.net/)
 
@@ -35,9 +42,9 @@ Example Log4j2 log4j2.xml:
     <configuration status="DEBUG" packages="org.apache.logging.log4j.core.layout" verbose="false">
        <appenders>
           <!-- logstash tcp stocket example, replace host value -->
-          <Socket name="LogStashSocket" host="REPLACE_HOST_NAME" port="4560" protocol="tcp">
-    	      <LogStashJSONLayout>
-        			
+          <Socket name="rollingStone" host="REPLACE_HOST_NAME" port="4560" protocol="tcp">
+    	      <CustomJSONLayout>
+
     			<!-- Example of what you might do to add fields, warning values should be known to be json escaped strings -->
     		    <KeyValuePair key="application_name" value="${sys:application.name}"/>
     		    <KeyValuePair key="application_version" value="${sys:application.version}"/>
@@ -52,14 +59,14 @@ Example Log4j2 log4j2.xml:
     		    
     		    <!--Example of using environment property substitution  env:USERNAME on windows-->
     		    <KeyValuePair key="environment_user" value="${env:USER}"/> 
-      	      </LogStashJSONLayout>    	  
+      	      </CustomJSONLayout>    	  
     	  </Socket>
        </appenders>
        
        <loggers>
           <root level="DEBUG">
              <!-- Example of logstash json layout and configuration -->
-             <appender-ref ref="LogStashSocket" />   
+             <appender-ref ref="rollingStone" />   
           </root>
        </loggers>
     </configuration>
@@ -86,23 +93,24 @@ Note, tcp input has buffer underrun and overrun conditions that prevent use with
 You should see in your logstash console a message like:
 
     {
-      "@version" : "1",
-      "@timestamp" : "2015-07-28T15:24:53.386-07:00",
-      "timeMillis" : 1438122293386,
+      "version" : "1",
+      "timestamp" : "2016-12-20T04:44:14.712-08:00",
+      "timeMillis" : 1482237854712,
       "thread" : "main",
       "level" : "DEBUG",
-      "loggerName" : "org.apache.logging.log4j.core.layout.LogStashJSONLayoutJacksonIT",
+      "loggerName" : "org.apache.logging.log4j.core.layout.CustomJSONLayoutJacksonIT",
       "message" : "Test Message",
       "endOfBatch" : false,
-      "loggerFqcn" : "org.apache.logging.log4j.core.layout.LogStashJSONLayoutJacksonIT",
+      "loggerFqcn" : "org.apache.logging.log4j.core.layout.CustomJSONLayoutJacksonIT",
       "contextMap" : [ {
-        "key" : "Foo",
-        "value" : "Bar"
-      }, {
         "key" : "A",
         "value" : "B"
+      }, {
+        "key" : "Foo",
+        "value" : "Bar"
       } ]
     }
+    
 
 #### Look out for malformed messages
 
@@ -110,18 +118,20 @@ Something is wrong with your configuration if you see something like the above b
 
     {
            "message" => "{\"@version\":\"1\",\"@timestamp\":\"2014-04-29T16:21:03.554-07:00\",\"logger\":\"com.liaison.service.resource.examples.LogStashExampleTest\",\"level\":\"ERROR\",\"thread\":\"Test worker\",\"message\":\"Going on right here\",\"LocationInfo\":{\"class\":\"com.liaison.service.resource.examples.LogStashExampleTest\",\"method\":\"testLogStashLogs\",\"file\":\"LogStashExampleTest.java\",\"line\":\"15\"},\"log\":\"THIS BLOCK IS ARBITRARY FORMAT 16:21:03.554 [Test worker] ERROR com.liaison.service.resource.examples.LogStashExampleTest - Going on right here\",\"environment_type\":\"${sys:deploy_env}\",\"cluster_name\":\"example cluster name\",\"cluster_location\":\"${sys:cluster_location}\",\"application_name\":\"${sys:application.name}\",\"application_user\":\"jeremyfranklin-ross\",\"application_version\":\"${sys:application.version}\",\"hostname\":\"${sys:hostname}\",\"environment_user\":\"jeremyfranklin-ross\",\"host_ip\":\"${sys:host_ip}\"}\r",
-          "@version" => "1",
-        "@timestamp" => "2014-04-29T23:21:03.099Z",
+          "version" => "1",
+        "timestamp" => "2014-04-29T23:21:03.099Z",
               "host" => "10.211.55.2:53807"
     }
 
 If you see this behavior it either you have specified the wrong codec in your logstash conf or log4j2 layout is producing malformed json (typically due to incorrect parameters set in log4j2 or unescaped json characters in keypair values).
 
 
-## Log4j2 Logstash Layout In More Detail
+## Log4j2 Custom Layout In More Detail
 
-### Logstash LogEvent JSON Layout:
-Conceptually this is a mashup between log4j2 logevent json schema and logstash event schema. The only required elements are @version and @timestamp which, as you'll note, is in logstash's native format so no modification needs to happen here. 
+### Custom LogEvent JSON Layout:
+Conceptually this is a mashup between log4j2 logevent json schema and logstash event schema. 
+The only required elements are @version and @timestamp which, as you'll note, is in logstash's native format 
+so no modification needs to happen here. 
  
 #### Log4j2 LogEvent Elements
 
@@ -151,7 +161,9 @@ UDP can have strict size limits and ambiguous over-sized functionality. This lay
 
 ## Developer Discussion
 
-The implementation is fast, using StringBuilder (as opposed to a general use object serializer such as GSON or Jackson). The code is a branch of the log4j2 JSONLayout (http://logging.apache.org/log4j/2.x/log4j-core/apidocs/index.html) and so should be maintained in close parallel (review changeset of JSONLayout when upgrading log4j2 dependency version).
+The implementation is fast, using StringBuilder (as opposed to a general use object serializer such as GSON or Jackson). 
+The code is a branch of the log4j2 JSONLayout (http://logging.apache.org/log4j/2.x/log4j-core/apidocs/index.html) and 
+so should be maintained in close parallel (review changeset of JSONLayout when upgrading log4j2 dependency version).
 
 Project Needs: YOU CAN HELP :)
 

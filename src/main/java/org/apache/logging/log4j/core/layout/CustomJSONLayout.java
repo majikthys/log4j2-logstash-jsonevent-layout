@@ -38,17 +38,17 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  *
  * @see org.apache.logging.log4j.core.layout.JsonLayout
  */
-@Plugin(name = "LogStashJSONLayout", category = "Core", elementType = "layout", printObject = true)
-public class LogStashJSONLayout extends AbstractJacksonLayout {
+@Plugin(name = "CustomJSONLayout", category = "Core", elementType = "layout", printObject = true)
+public class CustomJSONLayout extends AbstractJacksonLayout {
 
     static final String CONTENT_TYPE = "application/json";
 
     private static final Map<String, String> additionalLogAttributes = new HashMap<String, String>();
 
-    protected LogStashJSONLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
-                                 boolean eventEol, final Charset charset, final Map<String, String> additionalLogAttributes) {
+    protected CustomJSONLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
+                               boolean eventEol, final Charset charset, final Map<String, String> additionalLogAttributes) {
 
-        super(new LogStashJacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact, complete, eventEol);
+        super(new CustomJacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact, complete, eventEol);
         this.additionalLogAttributes.putAll(additionalLogAttributes);
     }
 
@@ -151,7 +151,7 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
         }
 
 
-        return new LogStashJSONLayout(locationInfo, properties, complete, compact, eventEol, charset, additionalLogAttributes);
+        return new CustomJSONLayout(locationInfo, properties, complete, compact, eventEol, charset, additionalLogAttributes);
 
     }
 
@@ -161,7 +161,7 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
      * @return A JSON Layout.
      */
     public static AbstractJacksonLayout createDefaultLayout() {
-        return new LogStashJSONLayout(false, false, false, false, false, UTF_8, new HashMap<String,String>());
+        return new CustomJSONLayout(false, false, false, false, false, UTF_8, new HashMap<String,String>());
     }
 
     /**

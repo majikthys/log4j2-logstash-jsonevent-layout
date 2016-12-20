@@ -10,10 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * Created by jeremyfranklin-ross on 7/27/15.
  */
-public class LogStashLog4jJsonObjectMapper extends ObjectMapper {
+public class CustomLog4jJsonObjectMapper extends ObjectMapper {
 
-    public LogStashLog4jJsonObjectMapper() {
-        this.registerModule(new LogStashLog4jJsonModule());
+    public CustomLog4jJsonObjectMapper() {
+        this.registerModule(new CustomLog4jJsonModule());
         this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
 

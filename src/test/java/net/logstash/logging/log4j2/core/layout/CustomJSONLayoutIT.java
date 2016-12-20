@@ -27,9 +27,9 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
 
-public class LogStashJSONLayoutIT {
+public class CustomJSONLayoutIT {
 //    public static final String LOCATION_INFO = "LocationInfo";
-//    private static Logger logger = LogManager.getLogger(LogStashJSONLayoutIT.class);
+//    private static Logger logger = LogManager.getLogger(CustomJSONLayoutIT.class);
 //
 //
 //    @Test(enabled = false, dataProvider = "dp")
@@ -58,7 +58,7 @@ public class LogStashJSONLayoutIT {
 //    String expectedBasicSimpleTestJSON = "{" +
 //            "\"@version\":\"1\"," +
 //            // REMOVE timestamp b/c it'll alwayhs be wrong "\"@timestamp\":\"2014-10-03T09:58:03.391-07:00\"," +
-//            "\"logger\":\"net.logstash.logging.log4j2.core.layout.LogStashJSONLayoutIT\"," +
+//            "\"logger\":\"net.logstash.logging.log4j2.core.layout.CustomJSONLayoutIT\"," +
 //            "\"level\":\"DEBUG\"," +
 //            "\"thread\":\""+ Thread.currentThread().getName() +"\"," +
 //            "\"message\":\"Test Message\"," +
@@ -75,7 +75,7 @@ public class LogStashJSONLayoutIT {
 //                null);
 //
 //
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -128,7 +128,7 @@ public class LogStashJSONLayoutIT {
 //                simpleMessage,
 //                nestedThrowable);
 //
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -184,7 +184,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributePropertiesDefault() throws IOException {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, // defaultTrue     @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -228,7 +228,7 @@ public class LogStashJSONLayoutIT {
 //        String expectedJSON = "{" +
 //                "\"@version\":\"1\"," +
 //                // REMOVE timestamp b/c it'll alwayhs be wrong "\"@timestamp\":\"2014-10-03T09:58:03.391-07:00\"," +
-//                "\"logger\":\"net.logstash.logging.log4j2.core.layout.LogStashJSONLayoutIT\"," +
+//                "\"logger\":\"net.logstash.logging.log4j2.core.layout.CustomJSONLayoutIT\"," +
 //                "\"level\":\"DEBUG\"," +
 //                "\"thread\":\"threadname.foo1\"," +
 //                "\"message\":\"testPluginAttributeLocationInfo\"," +
@@ -251,7 +251,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributePropertiesFalse() throws IOException {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                "false", // defaultTrue     @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -299,7 +299,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeLocationInfoDefault() throws IOException {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //   true by default   @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -354,7 +354,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeLocationInfoFalse() throws IOException {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                "false", //   true by default   @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -401,7 +401,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeComplete() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -425,7 +425,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeCompact() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -449,7 +449,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeNewLine() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -473,7 +473,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeCommaAtEventEnd() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -497,7 +497,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeCharSet() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -521,7 +521,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeExcludeLogger() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -545,7 +545,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeExcludeLevel() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -569,7 +569,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeExcludeThread() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -594,7 +594,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeMessage() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -619,7 +619,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeNDC() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -644,7 +644,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeThrown() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -669,7 +669,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeSkipJSONSublayout() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -694,7 +694,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributeLayout() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,
@@ -718,7 +718,7 @@ public class LogStashJSONLayoutIT {
 //
 //    @Test
 //    public void testPluginAttributePairs() {
-//        LogStashJSONLayout layout = LogStashJSONLayout.createLayout(
+//        CustomJSONLayout layout = CustomJSONLayout.createLayout(
 //                null, //      @PluginAttribute("locationInfo") final String locationInfo,
 //                null, //      @PluginAttribute("properties") final String properties,
 //                null, //      @PluginAttribute("complete") final String completeStr,

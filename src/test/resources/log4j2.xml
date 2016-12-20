@@ -6,7 +6,7 @@
     </Console>
 
     <Console name="TestConsole2" target="SYSTEM_OUT">
-      <LogStashJSONLayout charset="UTF-8" skipJsonEscapeSubLayout="true" subLayoutAsElement="true">
+      <CustomJSONLayout charset="UTF-8" skipJsonEscapeSubLayout="true" subLayoutAsElement="true">
 
         <!-- Provide ANY type of layout to expose the message, being mindful that if -->
         <!-- subLayoutAsElement="true", your (likely custom) Layout will need to     -->
@@ -24,7 +24,7 @@
 
         <!-- Example of using environment property substitution  env:USERNAME on windows -->
         <!--<KeyValuePair key="environment_user" value="${env:USER}"/>-->
-      </LogStashJSONLayout>
+      </CustomJSONLayout>
     </Console>
     <!--<AuditSyslogAppender name="AuditSysLog" format="RFC5424" host="localhost" port="514"
                protocol="UDP" appName="TESTAPP" includeMDC="true"

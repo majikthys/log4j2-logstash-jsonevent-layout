@@ -3,7 +3,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'maven-publish-auth'
 
-description = 'Log4J2 Layout for outputting LogStash json_event format'
+description = 'Log4J2 JSONLayout for outputting json_event format'
 
 apply plugin: 'java'
 

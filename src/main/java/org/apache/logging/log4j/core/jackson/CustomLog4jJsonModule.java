@@ -3,15 +3,15 @@ package org.apache.logging.log4j.core.jackson;
 import org.apache.logging.log4j.core.LogEvent;
 
 /**
- * Cribbed from core Log4jJsonModule this merely to override the LogEvent mixin with LogStashLogEventMixIn
+ * Cribbed from core Log4jJsonModule this merely to override the LogEvent mixin with CustomLogEventMixIn
  *
  * Created by jeremyfranklin-ross on 7/28/15.
  */
-public class LogStashLog4jJsonModule extends Log4jJsonModule {
+public class CustomLog4jJsonModule extends Log4jJsonModule {
 
     private static final long serialVersionUID = 1L;
 
-    LogStashLog4jJsonModule() {
+    CustomLog4jJsonModule() {
         super();
     }
 
@@ -22,6 +22,6 @@ public class LogStashLog4jJsonModule extends Log4jJsonModule {
         super.setupModule(context);
 
         //OVERRIDE LogEvent.class mixin with our custom one.
-        context.setMixInAnnotations(LogEvent.class, LogStashLogEventMixIn.class);
+        context.setMixInAnnotations(LogEvent.class, CustomLogEventMixIn.class);
     }
 }

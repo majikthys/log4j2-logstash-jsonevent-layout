@@ -20,14 +20,14 @@ import org.apache.logging.log4j.message.Message;
  *
  * Created by jeremyfranklin-ross on 7/28/15.
  */
-public class LogStashLogEvent implements LogEvent{
+public class JsonLogEvent implements LogEvent{
 
-    static final String LOG_STASH_ISO8601_TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
-    static final DateFormat iso8601DateFormat = new SimpleDateFormat(LOG_STASH_ISO8601_TIMESTAMP_FORMAT);
+    static final String ISO8601_TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+    static final DateFormat iso8601DateFormat = new SimpleDateFormat(ISO8601_TIMESTAMP_FORMAT);
 
     private LogEvent wrappedLogEvent;
 
-    public LogStashLogEvent(LogEvent wrappedLogEvent) {
+    public JsonLogEvent(LogEvent wrappedLogEvent) {
         this.wrappedLogEvent = wrappedLogEvent;
     }
 
@@ -130,11 +130,11 @@ public class LogStashLogEvent implements LogEvent{
      *
      * Created by jeremyfranklin-ross on 7/28/15.
      */
-    public static class LogEventToLogStashLogEventConverter extends StdConverter<LogEvent, LogStashLogEvent> {
+    public static class LogEventToLogStashLogEventConverter extends StdConverter<LogEvent, JsonLogEvent> {
 
         @Override
-        public LogStashLogEvent convert(LogEvent value) {
-            return new LogStashLogEvent(value);
+        public JsonLogEvent convert(LogEvent value) {
+            return new JsonLogEvent(value);
         }
     }
 }
