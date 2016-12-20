@@ -32,7 +32,7 @@ public class JsonLogEvent implements LogEvent{
     }
 
     public String getVersion() {
-        return "1";//LOGSTASH VERSION
+        return "1";//LOGGING VERSION
     }
 
     public String getTimestamp() {
@@ -136,5 +136,15 @@ public class JsonLogEvent implements LogEvent{
         public JsonLogEvent convert(LogEvent value) {
             return new JsonLogEvent(value);
         }
+    }
+
+    @Override
+    public long getThreadId() {
+        return wrappedLogEvent.getThreadId();
+    }
+
+    @Override
+    public int getThreadPriority() {
+        return wrappedLogEvent.getThreadPriority();
     }
 }

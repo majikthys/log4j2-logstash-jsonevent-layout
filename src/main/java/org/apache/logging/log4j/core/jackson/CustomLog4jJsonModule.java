@@ -11,8 +11,8 @@ public class CustomLog4jJsonModule extends Log4jJsonModule {
 
     private static final long serialVersionUID = 1L;
 
-    CustomLog4jJsonModule() {
-        super();
+    CustomLog4jJsonModule(boolean encodeThreadContextAsList) {
+        super(encodeThreadContextAsList);
     }
 
 

@@ -23,10 +23,9 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.plugins.*;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.util.Strings;
 
@@ -45,10 +44,22 @@ public class CustomJSONLayout extends AbstractJacksonLayout {
 
     private static final Map<String, String> additionalLogAttributes = new HashMap<String, String>();
 
-    protected CustomJSONLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
-                               boolean eventEol, final Charset charset, final Map<String, String> additionalLogAttributes) {
-
-        super(new CustomJacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact, complete, eventEol);
+    protected CustomJSONLayout(final Configuration configuration,
+                               final boolean locationInfo,
+                               final boolean properties,
+                               final boolean complete,
+                               final boolean compact,
+                               boolean eventEol,
+                               final Charset charset,
+                               final Map<String, String> additionalLogAttributes) {
+        super(configuration,
+                new CustomJacksonFactory.JSON(false).newWriter(locationInfo, properties, compact),
+                charset,
+                compact,
+                complete,
+                eventEol,
+                null,
+                null);
         this.additionalLogAttributes.putAll(additionalLogAttributes);
     }
 
@@ -117,6 +128,7 @@ public class CustomJSONLayout extends AbstractJacksonLayout {
     @PluginFactory
     public static AbstractJacksonLayout createLayout(
             // @formatter:off
+            @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
             @PluginAttribute(value = "properties", defaultBoolean = false) final boolean properties,
             @PluginAttribute(value = "complete", defaultBoolean = false) final boolean complete,
@@ -151,7 +163,7 @@ public class CustomJSONLayout extends AbstractJacksonLayout {
         }
 
 
-        return new CustomJSONLayout(locationInfo, properties, complete, compact, eventEol, charset, additionalLogAttributes);
+        return new CustomJSONLayout(config, locationInfo, properties, complete, compact, eventEol, charset, additionalLogAttributes);
 
     }
 
@@ -161,7 +173,8 @@ public class CustomJSONLayout extends AbstractJacksonLayout {
      * @return A JSON Layout.
      */
     public static AbstractJacksonLayout createDefaultLayout() {
-        return new CustomJSONLayout(false, false, false, false, false, UTF_8, new HashMap<String,String>());
+        return new CustomJSONLayout(new DefaultConfiguration(),
+                false, false, false, false, false, UTF_8, new HashMap<String,String>());
     }
 
     /**

@@ -6,12 +6,11 @@
     </Console>
 
     <Console name="TestConsole2" target="SYSTEM_OUT">
-      <CustomJSONLayout charset="UTF-8" skipJsonEscapeSubLayout="true" subLayoutAsElement="true">
+      <CustomJSONLayout charset="UTF-8">
 
         <!-- Provide ANY type of layout to expose the message, being mindful that if -->
         <!-- subLayoutAsElement="true", your (likely custom) Layout will need to     -->
         <!-- produce a valid and escaped json element                                -->
-        <PatternLayout pattern="pattern::{}:: %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
 
         <!-- Example of what you might do to add fields, warning values should be known to be json escaped strings -->
         <!--<KeyValuePair key="application_name" value="super application"/>-->
