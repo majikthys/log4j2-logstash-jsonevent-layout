@@ -8,7 +8,7 @@ description = 'Log4J2 JSONLayout for outputting json_event format'
 apply plugin: 'java'
 
 version='4.1.0'
-group = 'net.logstash.log4j2'
+group = 'net.json.log4j2'
 
 buildscript {
     dependencies {

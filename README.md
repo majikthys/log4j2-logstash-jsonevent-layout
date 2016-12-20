@@ -23,7 +23,7 @@ Sorry! Until we have a maven repository you'll have to build it yourself! I'm wo
 
 # Getting Started
 
-You'll need an application that uses [log4j2](http://logging.apache.org/) and an install of [logstash](http://logstash.net/). 
+You'll need an application that uses [log4j2](http://logging.apache.org/)
 Explaining these perquisites is an exercise left for the reader, 
 but we'll provide you a configuration sample.
 
@@ -33,7 +33,7 @@ but we'll provide you a configuration sample.
 
 This is the simplest form of the intended use. Once you have this configuration working, you should be able to customize the configuration to your specific needs.
 
-Log4j2 is configured to connect to logstash via a TCP by using a standard SocketAppender with our LogStashJSONLayout in order to produce logstash v1 spec json. Logstash is configure to receive TCP connections and expect logstash v1 spec json. 
+Log4j2 is configured to connect to logstash via a TCP by using a standard SocketAppender with our CustomJSONLayout in order to produce logstash v1 spec json. Logstash is configure to receive TCP connections and expect logstash v1 spec json. 
 
 
 Example Log4j2 log4j2.xml:
@@ -177,11 +177,25 @@ Project Needs: YOU CAN HELP :)
 We use gradle to build. Don't worry, it's embedded.
 
 To generate a jar file, use:
+
+```
+./gradlew clean install
+
+or 
+
 ./gradlew clean build 
+```
 
-This will produce a jar file that you may import into your current project. For example:
-build/libs/log4j2-logstash-jsonevent-layout-1.0.2-SNAPSHOT.jar
 
+```
+
+        <dependency>
+            <groupId>net.json.log4j2</groupId>
+            <artifactId>log4j2-jsonlayout</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
+```
 
 ### Maven Publishing
 We're using gradle maven-publish plugin, which is currently incubating and requires a settings.xml
