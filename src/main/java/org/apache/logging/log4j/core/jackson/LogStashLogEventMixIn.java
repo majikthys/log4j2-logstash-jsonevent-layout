@@ -16,20 +16,18 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
+import com.fasterxml.jackson.annotation.*;
 import org.apache.logging.log4j.core.LogStashLogEvent;
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import java.util.Map;
 
 /**
  * Extends LogEventMixIn but adds two elements
  */
-@JsonSerialize(converter = LogStashLogEvent.LogEventToLogStashLogEventConverter.class)
 @JsonRootName(XmlConstants.ELT_EVENT)
-@JsonFilter("org.apache.logging.log4j.core.impl.Log4jLogEvent")
-@JsonPropertyOrder({"@version", "timestamp", "timeMillis", "threadName", "level", "loggerName", "marker", "message", "thrown", XmlConstants.ELT_CONTEXT_MAP,
+@JsonFilter("org.apache.logging.log4j.core.LogStashLogEvent")
+@JsonPropertyOrder({"@version", "timestamp", "timeMillis", "threadId", "threadName", "threadPriority", "level", "loggerName", "marker", "message", "thrown", XmlConstants.ELT_CONTEXT_MAP,
         JsonConstants.ELT_CONTEXT_STACK, "loggerFQCN", "Source", "endOfBatch" })
 abstract class LogStashLogEventMixIn extends LogEventMixIn {
 
@@ -41,5 +39,6 @@ abstract class LogStashLogEventMixIn extends LogEventMixIn {
     @JsonProperty("@version")
     public abstract String getVersion();
 
-
+    @JsonAnyGetter
+    public abstract Map<String, String> getAdditionalLogAttributes();
 }

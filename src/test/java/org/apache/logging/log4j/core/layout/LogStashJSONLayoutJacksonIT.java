@@ -47,8 +47,6 @@ public class LogStashJSONLayoutJacksonIT {
     }
 
 
-    ObjectMapper mapper = new ObjectMapper();
-
     String expectedBasicSimpleTestJSON = "{\"@version\":\"1\"," +
                    // "\"@timestamp\":\"2015-07-28T11:31:18.492-07:00\",\"timeMillis\":1438108278492," +
                     "\"thread\":\""+ Thread.currentThread().getName() +"\"," +
@@ -57,7 +55,10 @@ public class LogStashJSONLayoutJacksonIT {
                     "\"message\":\"Test Message\"," +
                     "\"endOfBatch\":false," +
                     "\"loggerFqcn\":\"org.apache.logging.log4j.core.layout.LogStashJSONLayoutJacksonIT\","+
-                    "\"contextMap\":[{\"key\":\"Foo\",\"value\":\"Bar\"},{\"key\":\"A\",\"value\":\"B\"}]}";
+                    "\"contextMap\":[{\"key\":\"A\",\"value\":\"B\"}]," +
+                    "\"Foo\":\"Bar\"," +
+                    "\"threadId\":"+ Thread.currentThread().getId() +"," +
+                    "\"threadPriority\":"+ Thread.currentThread().getPriority() +"}";
 
     @Test
     public void BasicSimpleTest() throws Exception {
@@ -82,11 +83,15 @@ public class LogStashJSONLayoutJacksonIT {
 
 
         AbstractJacksonLayout layout = LogStashJSONLayout.createLayout(
+                null, //config
                 true, //location
                 true, //properties
+                true, //propertiesAsList
                 true, //complete
                 false, //compact
                 false, //eventEol
+                "[", //header
+                "]", //footer
                 Charset.defaultCharset(),
                 new KeyValuePair[]{new KeyValuePair("Foo", "Bar")}
         );
