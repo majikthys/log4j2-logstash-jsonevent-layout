@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import org.apache.logging.log4j.core.LogStashLogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.LogStashLog4jJsonObjectMapper;
 
@@ -17,25 +18,31 @@ import java.util.Set;
  */
 abstract  class LogStashJacksonFactory extends JacksonFactory {
         static class JSON extends JacksonFactory.JSON {
-            @Override
-            protected ObjectMapper newObjectMapper() {
-                return new LogStashLog4jJsonObjectMapper();
+            private final boolean encodeThreadContextAsList;
+
+            JSON(boolean encodeThreadContextAsList) {
+                super(encodeThreadContextAsList);
+                this.encodeThreadContextAsList = encodeThreadContextAsList;
             }
 
-        }
+            @Override
+            protected ObjectMapper newObjectMapper() {
+                return new LogStashLog4jJsonObjectMapper(encodeThreadContextAsList);
+            }
 
-    ObjectWriter newWriter(final boolean locationInfo, final boolean properties, final boolean compact) {
-        final SimpleFilterProvider filters = new SimpleFilterProvider();
-        final Set<String> except = new HashSet<String>(2);
-        if (!locationInfo) {
-            except.add(this.getPropertNameForSource());
+            @Override
+            ObjectWriter newWriter(boolean locationInfo, boolean properties, boolean compact) {
+                final SimpleFilterProvider filters = new SimpleFilterProvider();
+                final Set<String> except = new HashSet<String>(2);
+                if (!locationInfo) {
+                    except.add(this.getPropertNameForSource());
+                }
+                if (!properties) {
+                    except.add(this.getPropertNameForContextMap());
+                }
+                filters.addFilter(LogStashLogEvent.class.getName(), SimpleBeanPropertyFilter.serializeAllExcept(except));
+                final ObjectWriter writer = this.newObjectMapper().writer(compact ? this.newCompactPrinter() : this.newPrettyPrinter());
+                return writer.with(filters);
+            }
         }
-        if (!properties) {
-            except.add(this.getPropertNameForContextMap());
-        }
-        filters.addFilter(Log4jLogEvent.class.getName(), SimpleBeanPropertyFilter.serializeAllExcept(except));
-        final ObjectWriter writer = this.newObjectMapper().writer(compact ? this.newCompactPrinter() : this.newPrettyPrinter());
-        return writer.with(filters);
-    }
-
 }

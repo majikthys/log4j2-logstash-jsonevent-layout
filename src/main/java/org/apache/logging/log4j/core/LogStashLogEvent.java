@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.util.StdConverter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -27,8 +26,11 @@ public class LogStashLogEvent implements LogEvent{
 
     private LogEvent wrappedLogEvent;
 
-    public LogStashLogEvent(LogEvent wrappedLogEvent) {
+    private Map<String, String> additionalLogAttributes;
+
+    public LogStashLogEvent(LogEvent wrappedLogEvent, Map<String, String> additionalLogAttributes) {
         this.wrappedLogEvent = wrappedLogEvent;
+        this.additionalLogAttributes = additionalLogAttributes;
     }
 
     public String getVersion() {
@@ -90,6 +92,16 @@ public class LogStashLogEvent implements LogEvent{
     }
 
     @Override
+    public long getThreadId() {
+        return wrappedLogEvent.getThreadId();
+    }
+
+    @Override
+    public int getThreadPriority() {
+        return wrappedLogEvent.getThreadPriority();
+    }
+
+    @Override
     public Throwable getThrown() {
         return wrappedLogEvent.getThrown();
     }
@@ -125,16 +137,7 @@ public class LogStashLogEvent implements LogEvent{
         return wrappedLogEvent.getNanoTime();
     }
 
-    /**
-     * Converter used by JsonSerilize annotation on mixin.
-     *
-     * Created by jeremyfranklin-ross on 7/28/15.
-     */
-    public static class LogEventToLogStashLogEventConverter extends StdConverter<LogEvent, LogStashLogEvent> {
-
-        @Override
-        public LogStashLogEvent convert(LogEvent value) {
-            return new LogStashLogEvent(value);
-        }
+    public Map<String,String> getAdditionalLogAttributes() {
+        return additionalLogAttributes;
     }
 }
