@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,8 +37,18 @@ public class JsonLogEvent implements LogEvent{
     }
 
     @Override
+    public LogEvent toImmutable() {
+        return null;
+    }
+
+    @Override
     public Map<String, String> getContextMap() {
         return wrappedLogEvent.getContextMap();
+    }
+
+    @Override
+    public ReadOnlyStringMap getContextData() {
+        return wrappedLogEvent.getContextData();
     }
 
     @Override

@@ -18,8 +18,8 @@ import java.util.Set;
 abstract  class CustomJacksonFactory extends JacksonFactory {
         static class JSON extends JacksonFactory.JSON {
 
-            public JSON(boolean encodeThreadContextAsList) {
-                super(encodeThreadContextAsList);
+            public JSON(boolean encodeThreadContextAsList, boolean stackTrace) {
+                super(encodeThreadContextAsList, stackTrace);
             }
 
             @Override

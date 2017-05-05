@@ -14,10 +14,9 @@ public class CustomLog4jJsonModule extends Log4jJsonModule {
 
     private static final long serialVersionUID = 1L;
 
-    CustomLog4jJsonModule(boolean encodeThreadContextAsList) {
-        super(encodeThreadContextAsList);
+    CustomLog4jJsonModule(boolean encodeThreadContextAsList, boolean includeStacktrace) {
+        super(encodeThreadContextAsList, includeStacktrace);
     }
-
 
     @Override
     public void setupModule(final SetupContext context) {

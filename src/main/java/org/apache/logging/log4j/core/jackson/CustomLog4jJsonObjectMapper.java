@@ -12,10 +12,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * on 7/27/15.
  */
 public class CustomLog4jJsonObjectMapper extends ObjectMapper {
-    boolean aBoolean = false;
+
+    boolean encodeThreadContextAsList = false;
+    boolean includeStackTrace = true; //dont know the purpose
 
     public CustomLog4jJsonObjectMapper() {
-        this.registerModule(new CustomLog4jJsonModule(aBoolean));
+        this.registerModule(new CustomLog4jJsonModule(encodeThreadContextAsList, includeStackTrace));
         this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
 
