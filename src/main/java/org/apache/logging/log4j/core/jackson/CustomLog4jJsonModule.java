@@ -3,9 +3,12 @@ package org.apache.logging.log4j.core.jackson;
 import org.apache.logging.log4j.core.LogEvent;
 
 /**
- * Cribbed from core Log4jJsonModule this merely to override the LogEvent mixin with CustomLogEventMixIn
+ * Cribbed from core org.apache.logging.log4j.core.jackson.Log4jJsonModule
  *
- * Created by jeremyfranklin-ross on 7/28/15.
+ * this merely to override the LogEvent mixin with CustomLogEventMixIn
+ *
+ * Created by jeremyfranklin-ross
+ * on 7/28/15.
  */
 public class CustomLog4jJsonModule extends Log4jJsonModule {
 

@@ -1,9 +1,5 @@
 package org.apache.logging.log4j.core.layout;
 
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +14,10 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
@@ -83,7 +83,7 @@ public class CustomJSONLayoutJacksonIT {
         );
 
         String actualJSON = layout.toSerializable(event);
-        System.out.println(actualJSON);
+        System.out.println("Actual = "+actualJSON);
 
         String expectedBasicSimpleTestJSON = "{\"version\":\"1\"," +
                 // "\"timestamp\":\"2015-07-28T11:31:18.492-07:00\",\"timeMillis\":1438108278492," +
@@ -134,7 +134,8 @@ public class CustomJSONLayoutJacksonIT {
         );
 
         String actualJSON = layout.toSerializable(event);
-        System.out.println(actualJSON);
+        System.out.println("Actual = " + actualJSON);
+
         assertThat(actualJSON, sameJSONAs("{\"version\":\"1\"," +
                 // "\"timestamp\":\"2015-07-28T11:31:18.492-07:00\",\"timeMillis\":1438108278492," +
                 "\"thread\":\""+ Thread.currentThread().getName() +"\"," +

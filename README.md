@@ -38,6 +38,7 @@ Log4j2 is configured to connect to logstash via a TCP by using a standard Socket
 
 Example Log4j2 log4j2.xml:
 
+    xml
     <?xml version="1.0" encoding="UTF-8"?>
     <configuration status="DEBUG" packages="org.apache.logging.log4j.core.layout" verbose="false">
        <appenders>
@@ -45,21 +46,21 @@ Example Log4j2 log4j2.xml:
           <Socket name="rollingStone" host="REPLACE_HOST_NAME" port="4560" protocol="tcp">
     	      <CustomJSONLayout>
 
-    			<!-- Example of what you might do to add fields, warning values should be known to be json escaped strings -->
-    		    <KeyValuePair key="application_name" value="${sys:application.name}"/>
-    		    <KeyValuePair key="application_version" value="${sys:application.version}"/>
-    		    <KeyValuePair key="environment_type" value="${sys:deploy_env}"/>
-    		    <KeyValuePair key="cluster_location" value="${sys:cluster_location}"/>
-    		    <KeyValuePair key="cluster_name" value="${sys:cluster_name}"/>
+    		    <!-- Example of what you might do to add fields, warning values should be known to be json escaped strings -->
+    		    <KeyValuePair key="applicationName" value="${sys:application.name}"/>
+    		    <KeyValuePair key="applicationVersion" value="${sys:application.version}"/>
+    		    <KeyValuePair key="environmentType" value="${sys:deploy_env}"/>
+    		    <KeyValuePair key="clusterLocation" value="${sys:cluster_location}"/>
+    		    <KeyValuePair key="clusterName" value="${sys:cluster_name}"/>
     		    <KeyValuePair key="hostname" value="${sys:hostname}"/>
-    		    <KeyValuePair key="host_ip" value="${sys:host_ip}"/>
+    		    <KeyValuePair key="hostIp" value="${sys:host_ip}"/>
     	
     		    <!--Example of using system property substitution -->
-    		    <KeyValuePair key="application_user" value="${sys:user.name}"/>
+    		    <KeyValuePair key="applicationUser" value="${sys:user.name}"/>
     		    
     		    <!--Example of using environment property substitution  env:USERNAME on windows-->
-    		    <KeyValuePair key="environment_user" value="${env:USER}"/> 
-      	      </CustomJSONLayout>    	  
+    		    <KeyValuePair key="environmentUser" value="${env:USER}"/> 
+      	      </CustomJSONLayout>
     	  </Socket>
        </appenders>
        
@@ -116,12 +117,15 @@ You should see in your logstash console a message like:
 
 Something is wrong with your configuration if you see something like the above but escaped and wedged into the message element, example:
 
+```json
     {
+
            "message" => "{\"@version\":\"1\",\"@timestamp\":\"2014-04-29T16:21:03.554-07:00\",\"logger\":\"com.liaison.service.resource.examples.LogStashExampleTest\",\"level\":\"ERROR\",\"thread\":\"Test worker\",\"message\":\"Going on right here\",\"LocationInfo\":{\"class\":\"com.liaison.service.resource.examples.LogStashExampleTest\",\"method\":\"testLogStashLogs\",\"file\":\"LogStashExampleTest.java\",\"line\":\"15\"},\"log\":\"THIS BLOCK IS ARBITRARY FORMAT 16:21:03.554 [Test worker] ERROR com.liaison.service.resource.examples.LogStashExampleTest - Going on right here\",\"environment_type\":\"${sys:deploy_env}\",\"cluster_name\":\"example cluster name\",\"cluster_location\":\"${sys:cluster_location}\",\"application_name\":\"${sys:application.name}\",\"application_user\":\"jeremyfranklin-ross\",\"application_version\":\"${sys:application.version}\",\"hostname\":\"${sys:hostname}\",\"environment_user\":\"jeremyfranklin-ross\",\"host_ip\":\"${sys:host_ip}\"}\r",
           "version" => "1",
         "timestamp" => "2014-04-29T23:21:03.099Z",
               "host" => "10.211.55.2:53807"
     }
+```
 
 If you see this behavior it either you have specified the wrong codec in your logstash conf or log4j2 layout is producing malformed json (typically due to incorrect parameters set in log4j2 or unescaped json characters in keypair values).
 

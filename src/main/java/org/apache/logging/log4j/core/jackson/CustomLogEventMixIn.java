@@ -29,17 +29,13 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize(converter = JsonLogEvent.LogEventToLogStashLogEventConverter.class)
 @JsonRootName(XmlConstants.ELT_EVENT)
 @JsonFilter("org.apache.logging.log4j.core.impl.Log4jLogEvent")
-@JsonPropertyOrder({"timestamp", "timeMillis", "version", "threadName", "level", "loggerName", "marker", "message", "thrown", XmlConstants.ELT_CONTEXT_MAP,
-        JsonConstants.ELT_CONTEXT_STACK, "loggerFQCN", "Source", "endOfBatch" })
+@JsonPropertyOrder({"timestamp", "timeMillis", "threadName", "level", "loggerName", "marker", "message", "thrown", XmlConstants.ELT_CONTEXT_MAP,
+        JsonConstants.ELT_CONTEXT_STACK, "Source" })
 abstract class CustomLogEventMixIn extends LogEventMixIn {
-
-    @JsonProperty("timestamp")
-    public abstract String getTimestamp();
 
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty("version")
-    public abstract String getVersion();
-
+    @JsonProperty("timestamp")
+    public abstract String getTimestamp();
 
 }

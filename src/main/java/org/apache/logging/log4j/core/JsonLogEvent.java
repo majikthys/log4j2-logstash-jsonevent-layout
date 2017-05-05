@@ -1,16 +1,16 @@
 package org.apache.logging.log4j.core;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.util.StdConverter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * To serialize with mixin AND add two properties (@version and @timestamp) we
@@ -29,10 +29,6 @@ public class JsonLogEvent implements LogEvent{
 
     public JsonLogEvent(LogEvent wrappedLogEvent) {
         this.wrappedLogEvent = wrappedLogEvent;
-    }
-
-    public String getVersion() {
-        return "1";//LOGGING VERSION
     }
 
     public String getTimestamp() {
@@ -69,9 +65,13 @@ public class JsonLogEvent implements LogEvent{
         return wrappedLogEvent.getMarker();
     }
 
+    //return JSON
     @Override
     public Message getMessage() {
-        return wrappedLogEvent.getMessage();
+        Message originalMessage = wrappedLogEvent.getMessage();
+//        String formattedMessage = originalMessage.getFormattedMessage();
+//        String[] split = formattedMessage.split(":");
+        return originalMessage;
     }
 
     @Override

@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Class cribbed from core Log4jJsonObjectMapper
+ * Class cribbed from @see{org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper}
  *
  * This merely registers CustomLog4JsonModule
  *
- * Created by jeremyfranklin-ross on 7/27/15.
+ * Created by jeremyfranklin-ross
+ * on 7/27/15.
  */
 public class CustomLog4jJsonObjectMapper extends ObjectMapper {
     boolean aBoolean = false;
