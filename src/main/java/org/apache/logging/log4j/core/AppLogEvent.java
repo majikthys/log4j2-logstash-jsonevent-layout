@@ -7,23 +7,23 @@ import org.json.JSONObject;
  * on 5/7/17.
  */
 
-public class AppLog extends JSONObject {
+public class AppLogEvent extends JSONObject {
 
-    public AppLog(){
+    public AppLogEvent(){
 
     }
 
-    public AppLog eventSourceId(Object eventSourceId) {
+    public AppLogEvent eventSourceId(Object eventSourceId) {
         this.put("eventSourceId", eventSourceId);
         return this;
     }
 
-    public AppLog eventType(String eventType) {
+    public AppLogEvent eventType(String eventType) {
         this.put("eventType", eventType);
         return this;
     }
 
-    public AppLog metrics(String metricKey, Object metricValue) {
+    public AppLogEvent metrics(String metricKey, Object metricValue) {
         this.put(metricKey, metricValue);
         return this;
     }

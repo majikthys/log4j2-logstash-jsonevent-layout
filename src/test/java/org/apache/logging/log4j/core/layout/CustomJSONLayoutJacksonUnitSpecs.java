@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AppLog;
+import org.apache.logging.log4j.core.AppLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -53,7 +53,7 @@ public class CustomJSONLayoutJacksonUnitSpecs {
 
     @Test
     public void hasTimestampAndVersionInLogMessages() throws Exception {
-        Message simpleMessage = new SimpleMessage(new AppLog()
+        Message simpleMessage = new SimpleMessage(new AppLogEvent()
                 .eventType("SomethingHappened")
                 .eventSourceId("UUID-01")
                 .metrics("name", "prayagupd")
@@ -106,7 +106,7 @@ public class CustomJSONLayoutJacksonUnitSpecs {
 
         exception.printStackTrace(printWriter);
 
-        Message simpleMessage = new SimpleMessage(new AppLog()
+        Message simpleMessage = new SimpleMessage(new AppLogEvent()
                 .put("name", "urayagppd")
                 .put("error", stringWriter.toString()).toString());
 
@@ -158,7 +158,7 @@ public class CustomJSONLayoutJacksonUnitSpecs {
 
     @Test
     public void hasError() throws Exception {
-        Message simpleMessage = new SimpleMessage(new AppLog().eventSourceId("sj").toJson());
+        Message simpleMessage = new SimpleMessage(new AppLogEvent().eventSourceId("sj").toJson());
 
         Map<String, String> mdc = new HashMap<String, String>();
         mdc.put("A", "B");//Already some threadcontext

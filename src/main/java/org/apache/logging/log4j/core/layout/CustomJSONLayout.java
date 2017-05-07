@@ -63,7 +63,7 @@ public class CustomJSONLayout extends AbstractJacksonLayout {
                                final Charset charset,
                                final Map<String, String> additionalLogAttributes) {
         super(configuration,
-                new CustomJacksonFactory.JSON(false, true).newWriter(locationInfo, properties, compact),
+                new JacksonFactory.JSON(false, true).newWriter(locationInfo, properties, compact),
                 charset,
                 compact,
                 complete,

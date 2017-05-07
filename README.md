@@ -1,31 +1,17 @@
-log4j2-CustomJSONLayout
+log4j2 CustomJSONLayout
 =======================
 
-Log4J2 Layout
-
-Note: Currently alpha: under active development and review. 
-Input and contributions most welcome!
+Log4J2 JSONLayout
 
 # Overview
 
-This is a log4j2 layout that produces json that is compliant to logstash v1 spec. 
+This is a log4j2 layout that produces json.
 JSON produced is a serialization of a given log4j2 LogEvent and is intentionally very similar to 
 that produced by the default log4j2 [JSONLayout](http://logging.apache.org/log4j/2.x/manual/layouts.html). 
-You may use this layout out of the box to connect your java application to a logstash server with maximal speed 
-and minimal redundant processing.
-
-This layout is fast, flexible, and other superlatives starting with f. 
 
 (see http://logging.apache.org/log4j/2.x/manual/layouts.html and  http://logstash.net/) 
 
-# Download
-Sorry! Until we have a maven repository you'll have to build it yourself! I'm working on this presently!
-
 # Getting Started
-
-You'll need an application that uses [log4j2](http://logging.apache.org/)
-Explaining these perquisites is an exercise left for the reader, 
-but we'll provide you a configuration sample.
 
 (see http://logging.apache.org/ and http://logstash.net/)
 
@@ -94,24 +80,19 @@ Note, tcp input has buffer underrun and overrun conditions that prevent use with
 ### Example output
 You should see in your logstash console a message like:
 
-    {
-      "version" : "1",
-      "timestamp" : "2016-12-20T04:44:14.712-08:00",
-      "timeMillis" : 1482237854712,
-      "thread" : "main",
-      "level" : "DEBUG",
-      "loggerName" : "org.apache.logging.log4j.core.layout.CustomJSONLayoutJacksonIT",
-      "message" : "Test Message",
-      "endOfBatch" : false,
-      "loggerFqcn" : "org.apache.logging.log4j.core.layout.CustomJSONLayoutJacksonIT",
-      "contextMap" : [ {
-        "key" : "A",
-        "value" : "B"
-      }, {
-        "key" : "Foo",
-        "value" : "Bar"
-      } ]
-    }
+```json
+{
+  "eventTimestamp": "2017-05-07T02:27:46.906-07:00",
+  "logger": "org.apache.logging.log4j.core.layout.CustomJSONLayoutJacksonUnitSpecs",
+  "eventSourceId": "UUID-01",
+  "timeTaken": 28,
+  "unit": "millis",
+  "name": "prayagupd",
+  "eventType": "SomethingHappened",
+  "level": "DEBUG",
+  "Foo": "Bar"
+}
+```
     
 
 #### Look out for malformed messages
@@ -197,7 +178,7 @@ or
         <dependency>
             <groupId>net.json.log4j2</groupId>
             <artifactId>log4j2-jsonlayout</artifactId>
-            <version>4.1.0</version>
+            <version>1.0.0</version>
         </dependency>
 
 ```
