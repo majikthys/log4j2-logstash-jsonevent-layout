@@ -21,7 +21,7 @@ import java.util.Map;
  *
  * Created by jeremyfranklin-ross on 7/28/15.
  */
-public class JsonLogEvent implements LogEvent{
+public class JsonLogEvent implements LogEvent {
 
     static final String ISO8601_TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
     static final DateFormat iso8601DateFormat = new SimpleDateFormat(ISO8601_TIMESTAMP_FORMAT);
@@ -80,8 +80,6 @@ public class JsonLogEvent implements LogEvent{
     @Override
     public Message getMessage() {
         Message originalMessage = wrappedLogEvent.getMessage();
-//        String formattedMessage = originalMessage.getFormattedMessage();
-//        String[] split = formattedMessage.split(":");
         return originalMessage;
     }
 

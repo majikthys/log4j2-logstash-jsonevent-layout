@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -27,10 +26,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.util.Strings;
+import org.json.JSONObject;
 
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -45,6 +48,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class CustomJSONLayout extends AbstractJacksonLayout {
 
     static final String CONTENT_TYPE = "application/json";
+
+    static final String ISO8601_TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+    static final DateFormat iso8601DateFormat = new SimpleDateFormat(ISO8601_TIMESTAMP_FORMAT);
 
     private static final Map<String, String> additionalLogAttributes = new HashMap<String, String>();
 
@@ -185,17 +191,27 @@ public class CustomJSONLayout extends AbstractJacksonLayout {
      * Formats a {@link org.apache.logging.log4j.core.LogEvent}.
      *
      * @param event The LogEvent.
-     * @return The XML representation of the LogEvent.
+     * @return The JSON representation of the LogEvent.
      */
     @Override
     public String toSerializable(final LogEvent event) {
         event.getContextMap().putAll(additionalLogAttributes);
-        try {
-            return this.objectWriter.writeValueAsString(event) + eol;
-        } catch (final JsonProcessingException e) {
-            // Should this be an ISE or IAE?
-            LOGGER.error(e);
-            return Strings.EMPTY;
-        }
+
+        LinkedHashMap<String, Object> orderedJson = new LinkedHashMap<>();
+        orderedJson.put("eventTimestamp", iso8601DateFormat.format(new Date(event.getTimeMillis())));
+        orderedJson.put("logger", event.getLoggerName());
+
+        JSONObject messageJson = new JSONObject(event.getMessage().getFormattedMessage());
+        messageJson.keySet().forEach(key -> {
+            orderedJson.put(key, messageJson.get(key));
+        });
+
+        orderedJson.put("level", event.getLevel().getStandardLevel().name());
+
+        orderedJson.putAll(additionalLogAttributes);
+
+        Gson gson = new Gson();
+
+        return gson.toJson(orderedJson, LinkedHashMap.class) + eol;
     }
 }

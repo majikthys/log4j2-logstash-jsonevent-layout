@@ -38,7 +38,8 @@ Log4j2 is configured to connect to logstash via a TCP by using a standard Socket
 
 Example Log4j2 log4j2.xml:
 
-    xml
+```xml
+
     <?xml version="1.0" encoding="UTF-8"?>
     <configuration status="DEBUG" packages="org.apache.logging.log4j.core.layout" verbose="false">
        <appenders>
@@ -71,7 +72,7 @@ Example Log4j2 log4j2.xml:
           </root>
        </loggers>
     </configuration>
-
+```
 
 Example logstash configuration (later we refer to this as file tcp-logstash.conf):
 
