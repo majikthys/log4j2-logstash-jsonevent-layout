@@ -3,12 +3,12 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'maven-publish-auth'
 
-description = 'Log4J2 Layout for outputting LogStash json_event format'
+description = 'Log4J2 JSONLayout for outputting json_event format'
 
 apply plugin: 'java'
 
-version='4.1.0'
-group = 'net.logstash.log4j2'
+version='1.0.0'
+group = 'net.json.log4j2'
 
 buildscript {
     dependencies {
@@ -62,7 +62,7 @@ publishing {
 
 dependencies {
 
-    def log4j2Version = '2.5';
+    def log4j2Version = '2.8.2';
     compile "org.apache.logging.log4j:log4j-api:$log4j2Version"
     compile "org.apache.logging.log4j:log4j-core:$log4j2Version"
 

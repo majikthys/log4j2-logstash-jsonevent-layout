@@ -16,19 +16,25 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.util.Strings;
+import org.json.JSONObject;
+
+import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -38,17 +44,32 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  *
  * @see org.apache.logging.log4j.core.layout.JsonLayout
  */
-@Plugin(name = "LogStashJSONLayout", category = "Core", elementType = "layout", printObject = true)
-public class LogStashJSONLayout extends AbstractJacksonLayout {
+@Plugin(name = "CustomJSONLayout", category = "Core", elementType = "layout", printObject = true)
+public class CustomJSONLayout extends AbstractJacksonLayout {
 
     static final String CONTENT_TYPE = "application/json";
 
+    static final String ISO8601_TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+    static final DateFormat iso8601DateFormat = new SimpleDateFormat(ISO8601_TIMESTAMP_FORMAT);
+
     private static final Map<String, String> additionalLogAttributes = new HashMap<String, String>();
 
-    protected LogStashJSONLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
-                                 boolean eventEol, final Charset charset, final Map<String, String> additionalLogAttributes) {
-
-        super(new LogStashJacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact, complete, eventEol);
+    protected CustomJSONLayout(final Configuration configuration,
+                               final boolean locationInfo,
+                               final boolean properties,
+                               final boolean complete,
+                               final boolean compact,
+                               boolean eventEol,
+                               final Charset charset,
+                               final Map<String, String> additionalLogAttributes) {
+        super(configuration,
+                new JacksonFactory.JSON(false, true).newWriter(locationInfo, properties, compact),
+                charset,
+                compact,
+                complete,
+                eventEol,
+                null,
+                null);
         this.additionalLogAttributes.putAll(additionalLogAttributes);
     }
 
@@ -99,24 +120,19 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
     /**
      * Creates a JSON Layout.
      *
-     * @param locationInfo
-     *        If "true", includes the location information in the generated JSON.
-     * @param properties
-     *        If "true", includes the thread context in the generated JSON.
-     * @param complete
-     *        If "true", includes the JSON header and footer, defaults to "false".
-     * @param compact
-     *        If "true", does not use end-of-lines and indentation, defaults to "false".
-     * @param eventEol
-     *        If "true", forces an EOL after each log event (even if compact is "true"), defaults to "false". This
-     *        allows one even per line, even in compact mode.
-     * @param charset
-     *        The character set to use, if {@code null}, uses "UTF-8".
+     * @param locationInfo If "true", includes the location information in the generated JSON.
+     * @param properties   If "true", includes the thread context in the generated JSON.
+     * @param complete     If "true", includes the JSON header and footer, defaults to "false".
+     * @param compact      If "true", does not use end-of-lines and indentation, defaults to "false".
+     * @param eventEol     If "true", forces an EOL after each log event (even if compact is "true"), defaults to "false". This
+     *                     allows one even per line, even in compact mode.
+     * @param charset      The character set to use, if {@code null}, uses "UTF-8".
      * @return A JSON Layout.
      */
     @PluginFactory
     public static AbstractJacksonLayout createLayout(
             // @formatter:off
+            @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
             @PluginAttribute(value = "properties", defaultBoolean = false) final boolean properties,
             @PluginAttribute(value = "complete", defaultBoolean = false) final boolean complete,
@@ -150,8 +166,7 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
 
         }
 
-
-        return new LogStashJSONLayout(locationInfo, properties, complete, compact, eventEol, charset, additionalLogAttributes);
+        return new CustomJSONLayout(config, locationInfo, properties, complete, compact, eventEol, charset, additionalLogAttributes);
 
     }
 
@@ -161,27 +176,33 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
      * @return A JSON Layout.
      */
     public static AbstractJacksonLayout createDefaultLayout() {
-        return new LogStashJSONLayout(false, false, false, false, false, UTF_8, new HashMap<String,String>());
+        return new CustomJSONLayout(new DefaultConfiguration(),
+                false, false, false, false, false, UTF_8, new HashMap<String, String>());
     }
 
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent}.
      *
      * @param event The LogEvent.
-     * @return The XML representation of the LogEvent.
+     * @return The JSON representation of the LogEvent.
      */
     @Override
     public String toSerializable(final LogEvent event) {
         event.getContextMap().putAll(additionalLogAttributes);
-        try {
-            return this.objectWriter.writeValueAsString(event) + eol;
-        } catch (final JsonProcessingException e) {
-            // Should this be an ISE or IAE?
-            LOGGER.error(e);
-            return Strings.EMPTY;
-        }
+
+        LinkedHashMap<String, Object> orderedJson = new LinkedHashMap<>();
+        orderedJson.put("@timestamp", iso8601DateFormat.format(new Date(event.getTimeMillis())));
+        orderedJson.put("logger_name", event.getLoggerName());
+
+        JSONObject messageJson = new JSONObject(event.getMessage().getFormattedMessage());
+        messageJson.keySet().forEach(key -> orderedJson.put(key, messageJson.get(key)));
+
+        orderedJson.put("level", event.getLevel().getStandardLevel().name());
+
+        orderedJson.putAll(additionalLogAttributes);
+
+        Gson gson = new Gson();
+
+        return gson.toJson(orderedJson, LinkedHashMap.class) + eol;
     }
-
-
-
 }
