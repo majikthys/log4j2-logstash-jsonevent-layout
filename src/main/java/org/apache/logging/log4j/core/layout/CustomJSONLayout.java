@@ -120,19 +120,13 @@ public class CustomJSONLayout extends AbstractJacksonLayout {
     /**
      * Creates a JSON Layout.
      *
-     * @param locationInfo
-     *        If "true", includes the location information in the generated JSON.
-     * @param properties
-     *        If "true", includes the thread context in the generated JSON.
-     * @param complete
-     *        If "true", includes the JSON header and footer, defaults to "false".
-     * @param compact
-     *        If "true", does not use end-of-lines and indentation, defaults to "false".
-     * @param eventEol
-     *        If "true", forces an EOL after each log event (even if compact is "true"), defaults to "false". This
-     *        allows one even per line, even in compact mode.
-     * @param charset
-     *        The character set to use, if {@code null}, uses "UTF-8".
+     * @param locationInfo If "true", includes the location information in the generated JSON.
+     * @param properties   If "true", includes the thread context in the generated JSON.
+     * @param complete     If "true", includes the JSON header and footer, defaults to "false".
+     * @param compact      If "true", does not use end-of-lines and indentation, defaults to "false".
+     * @param eventEol     If "true", forces an EOL after each log event (even if compact is "true"), defaults to "false". This
+     *                     allows one even per line, even in compact mode.
+     * @param charset      The character set to use, if {@code null}, uses "UTF-8".
      * @return A JSON Layout.
      */
     @PluginFactory
@@ -172,7 +166,6 @@ public class CustomJSONLayout extends AbstractJacksonLayout {
 
         }
 
-
         return new CustomJSONLayout(config, locationInfo, properties, complete, compact, eventEol, charset, additionalLogAttributes);
 
     }
@@ -184,7 +177,7 @@ public class CustomJSONLayout extends AbstractJacksonLayout {
      */
     public static AbstractJacksonLayout createDefaultLayout() {
         return new CustomJSONLayout(new DefaultConfiguration(),
-                false, false, false, false, false, UTF_8, new HashMap<String,String>());
+                false, false, false, false, false, UTF_8, new HashMap<String, String>());
     }
 
     /**
@@ -198,13 +191,11 @@ public class CustomJSONLayout extends AbstractJacksonLayout {
         event.getContextMap().putAll(additionalLogAttributes);
 
         LinkedHashMap<String, Object> orderedJson = new LinkedHashMap<>();
-        orderedJson.put("eventTimestamp", iso8601DateFormat.format(new Date(event.getTimeMillis())));
-        orderedJson.put("logger", event.getLoggerName());
+        orderedJson.put("@timestamp", iso8601DateFormat.format(new Date(event.getTimeMillis())));
+        orderedJson.put("logger_name", event.getLoggerName());
 
         JSONObject messageJson = new JSONObject(event.getMessage().getFormattedMessage());
-        messageJson.keySet().forEach(key -> {
-            orderedJson.put(key, messageJson.get(key));
-        });
+        messageJson.keySet().forEach(key -> orderedJson.put(key, messageJson.get(key)));
 
         orderedJson.put("level", event.getLevel().getStandardLevel().name());
 

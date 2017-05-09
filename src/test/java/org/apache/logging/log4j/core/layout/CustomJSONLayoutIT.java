@@ -1,4 +1,4 @@
-package net.logstash.logging.log4j2.core.layout;
+package org.apache.logging.log4j.core.layout;
 
 import java.io.IOException;
 import java.util.Date;
