@@ -7,7 +7,7 @@ description = 'Log4J2 Layout for outputting LogStash json_event format'
 
 apply plugin: 'java'
 
-version='4.1.0'
+version='4.2.1'
 group = 'net.logstash.log4j2'
 
 buildscript {
@@ -17,6 +17,12 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
+    }
+}
+
+allprojects {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:deprecation"
     }
 }
 
@@ -62,7 +68,7 @@ publishing {
 
 dependencies {
 
-    def log4j2Version = '2.5';
+    def log4j2Version = '2.8.2';
     compile "org.apache.logging.log4j:log4j-api:$log4j2Version"
     compile "org.apache.logging.log4j:log4j-core:$log4j2Version"
 
@@ -74,7 +80,7 @@ dependencies {
     testCompile 'commons-collections:commons-collections:3.+'
 
     // JACKSON for JSONification
-    def jacksonVersion = '2.+'
+    def jacksonVersion = '2.8.3'
     compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
     compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
     compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"

@@ -3,6 +3,7 @@ package org.apache.logging.log4j.core;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.util.StdConverter;
@@ -11,6 +12,9 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
+
 
 /**
  * To serialize with mixin AND add two properties (@version and @timestamp) we
@@ -27,8 +31,12 @@ public class LogStashLogEvent implements LogEvent{
 
     private LogEvent wrappedLogEvent;
 
+    private SortedArrayStringMap contextMap = new SortedArrayStringMap();
+
+
     public LogStashLogEvent(LogEvent wrappedLogEvent) {
         this.wrappedLogEvent = wrappedLogEvent;
+        contextMap.putAll(wrappedLogEvent.getContextData());
     }
 
     public String getVersion() {
@@ -41,7 +49,7 @@ public class LogStashLogEvent implements LogEvent{
 
     @Override
     public Map<String, String> getContextMap() {
-        return wrappedLogEvent.getContextMap();
+        return new HashMap<String,String>();
     }
 
     @Override
@@ -90,6 +98,16 @@ public class LogStashLogEvent implements LogEvent{
     }
 
     @Override
+    public int getThreadPriority() {
+        return wrappedLogEvent.getThreadPriority();
+    }
+
+    @Override
+    public long getThreadId() {
+        return wrappedLogEvent.getThreadId();
+    }
+
+    @Override
     public Throwable getThrown() {
         return wrappedLogEvent.getThrown();
     }
@@ -124,6 +142,17 @@ public class LogStashLogEvent implements LogEvent{
     public long getNanoTime() {
         return wrappedLogEvent.getNanoTime();
     }
+
+     @Override
+     public ReadOnlyStringMap getContextData() {
+         return contextMap;
+     }
+
+     @Override
+     public LogEvent toImmutable() {
+        return null;
+     }
+
 
     /**
      * Converter used by JsonSerilize annotation on mixin.
