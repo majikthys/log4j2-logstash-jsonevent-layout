@@ -18,8 +18,8 @@ import java.util.Set;
 abstract class LogStashJacksonFactory extends JacksonFactory {
         static class JSON extends JacksonFactory.JSON {
 
-            public JSON(final boolean encodeThreadContextAsList) {
-                super(encodeThreadContextAsList);
+            public JSON(final boolean encodeThreadContextAsList, final boolean includeStacktrace) {
+                super(encodeThreadContextAsList, includeStacktrace);
             }
 
             @Override

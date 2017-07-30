@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.util.Strings;
-
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 /**
  * Copy Pasta version of JsonLayout that uses a different JSON writer which adds
  * required logstash "@version" and "@timestamp" fields to the default serialized form.
@@ -50,13 +50,13 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
 
     static final String CONTENT_TYPE = "application/json";
 
-    private static final Map<String, String> additionalLogAttributes = new HashMap<String, String>();
+    private static final SortedArrayStringMap additionalLogAttributes = new SortedArrayStringMap();
 
     protected LogStashJSONLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean encodeThreadContextAsList,
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
-            final String footerPattern, final Charset charset, final Map<String, String> additionalLogAttributes) {
-        super(config, new LogStashJacksonFactory.JSON(encodeThreadContextAsList).newWriter(locationInfo, properties, compact),
+            final String footerPattern, final Charset charset, final SortedArrayStringMap additionalLogAttributes,final boolean includeStackTrace) {
+        super(config, new LogStashJacksonFactory.JSON(encodeThreadContextAsList,includeStackTrace).newWriter(locationInfo, properties, compact),
                 charset, compact, complete, eventEol,
                 PatternLayout.createSerializer(config, null, headerPattern, DEFAULT_HEADER, null, false, false),
                 PatternLayout.createSerializer(config, null, footerPattern, DEFAULT_FOOTER, null, false, false));
@@ -144,6 +144,8 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
      *            The header pattern, defaults to {@code "]"} if null.
      * @param charset
      *            The character set to use, if {@code null}, uses "UTF-8".
+     * @param includeStacktrace
+     *            If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
      * @param pairs
      *            Additional KeyValue Pairs
      * @return A JSON Layout.
@@ -161,13 +163,14 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
             @PluginAttribute(value = "header", defaultString = DEFAULT_HEADER) final String headerPattern,
             @PluginAttribute(value = "footer", defaultString = DEFAULT_FOOTER) final String footerPattern,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
+            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) boolean includeStacktrace,
             @PluginElement("Pairs") final KeyValuePair[] pairs
             // @formatter:on
     ) {
         final boolean encodeThreadContextAsList = properties && propertiesAsList;
 
         //Unpacke the pairs list
-        final Map<String, String> additionalLogAttributes = new HashMap<String, String>();
+        final SortedArrayStringMap additionalLogAttributes = new SortedArrayStringMap();
         if (pairs != null && pairs.length > 0) {
             for (final KeyValuePair pair : pairs) {
                 final String key = pair.getKey();
@@ -183,13 +186,13 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
                 if (additionalLogAttributes.containsKey(key)) {
                     LOGGER.error("Duplicate entry for key: {} is forbidden!", key);
                 }
-                additionalLogAttributes.put(key, value);
+                additionalLogAttributes.putValue(key, value);
             }
 
         }
 
         return new LogStashJSONLayout(config, locationInfo, properties, encodeThreadContextAsList, complete, compact, eventEol,
-                headerPattern, footerPattern, charset, additionalLogAttributes);
+                headerPattern, footerPattern, charset, additionalLogAttributes, includeStacktrace);
     }
 
     /**
@@ -199,7 +202,7 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
      */
     public static AbstractJacksonLayout createDefaultLayout() {
         return new LogStashJSONLayout(new DefaultConfiguration(), false, false, false, false, false, false,
-                DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8, new HashMap<String,String>());
+                DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8, new SortedArrayStringMap(), true);
     }
 
     /**
@@ -217,7 +220,8 @@ public class LogStashJSONLayout extends AbstractJacksonLayout {
         } else {
             logStashLogEvent = new LogStashLogEvent(event);
         }
-        logStashLogEvent.getContextMap().putAll(additionalLogAttributes);
+        //SortedArrayStringMap data = new SortedArrayStringMap();
+        ((SortedArrayStringMap)logStashLogEvent.getContextData()).putAll(additionalLogAttributes);
 
         try {
             return this.objectWriter.writeValueAsString(logStashLogEvent) + eol;

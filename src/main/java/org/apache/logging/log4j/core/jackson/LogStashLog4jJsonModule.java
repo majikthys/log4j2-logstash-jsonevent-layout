@@ -11,8 +11,8 @@ public class LogStashLog4jJsonModule extends Log4jJsonModule {
 
     private static final long serialVersionUID = 1L;
 
-    LogStashLog4jJsonModule(final boolean encodeThreadContextAsList) {
-        super(encodeThreadContextAsList);
+    LogStashLog4jJsonModule(final boolean encodeThreadContextAsList, final boolean includeStackTrace) {
+        super(encodeThreadContextAsList, includeStackTrace);
     }
 
 

@@ -18,6 +18,8 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
@@ -58,21 +60,21 @@ public class LogStashJSONLayoutJacksonIT {
                     "\"message\":\"Test Message\"," +
                     "\"endOfBatch\":false," +
                     "\"loggerFqcn\":\"org.apache.logging.log4j.core.layout.LogStashJSONLayoutJacksonIT\","+
-                    "\"contextMap\":[{\"key\":\"Foo\",\"value\":\"Bar\"},{\"key\":\"A\",\"value\":\"B\"}]}";
+                    "\"contextMap\":{\"A\":\"B\",\"Foo\":\"Bar\"}}";
 
     @Test
     public void BasicSimpleTest() throws Exception {
         Message simpleMessage = new SimpleMessage("Test Message");
 
-        Map<String,String>  mdc =     new HashMap<String,String>();
-        mdc.put("A","B");//Already some threadcontext
+        SortedArrayStringMap mdc =     new SortedArrayStringMap();
+        mdc.putValue("A","B");//Already some threadcontext
 
        Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
          builder.setLoggerName(logger.getName());
          builder.setLoggerFqcn(this.getClass().getCanonicalName());
          builder.setLevel(Level.DEBUG);
          builder.setMessage(simpleMessage);
-         builder.setContextMap(mdc);
+         builder.setContextData(mdc);
          builder.setThreadName(Thread.currentThread().getName());
          builder.setTimeMillis(System.currentTimeMillis());
        LogEvent event = builder.build();
@@ -88,6 +90,7 @@ public class LogStashJSONLayoutJacksonIT {
                 "[", //header
                 "]", //footer
                 Charset.defaultCharset(),
+                true, //includeStackTrace
                 new KeyValuePair[]{new KeyValuePair("Foo", "Bar")}
         );
 
@@ -111,14 +114,14 @@ public class LogStashJSONLayoutJacksonIT {
     public void EmptyMDCTest() throws Exception {
         Message simpleMessage = new SimpleMessage("Test Message");
 
-        Map<String,String>  mdc =     new HashMap<String,String>();
+        SortedArrayStringMap  mdc =     new SortedArrayStringMap();
 
         Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
           builder.setLoggerName(logger.getName());
           builder.setLoggerFqcn(this.getClass().getCanonicalName());
           builder.setLevel(Level.DEBUG);
           builder.setMessage(simpleMessage);
-          builder.setContextMap(mdc);
+          builder.setContextData(mdc);
           builder.setThreadName(Thread.currentThread().getName());
           builder.setTimeMillis(System.currentTimeMillis());
         LogEvent event = builder.build();
@@ -134,6 +137,7 @@ public class LogStashJSONLayoutJacksonIT {
                  "[", //header
                  "]", //footer
                  Charset.defaultCharset(),
+                 true, //includeStackTrace
                  new KeyValuePair[]{new KeyValuePair("Foo", "Bar")}
          );
 
@@ -149,14 +153,14 @@ public class LogStashJSONLayoutJacksonIT {
     public void NullMDCTest() throws Exception {
         Message simpleMessage = new SimpleMessage("Test Message");
 
-        Map<String,String>  mdc = null;
+        SortedArrayStringMap  mdc = null;
 
         Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
           builder.setLoggerName(logger.getName());
           builder.setLoggerFqcn(this.getClass().getCanonicalName());
           builder.setLevel(Level.DEBUG);
           builder.setMessage(simpleMessage);
-          builder.setContextMap(mdc);
+          builder.setContextData(mdc);
           builder.setThreadName(Thread.currentThread().getName());
           builder.setTimeMillis(System.currentTimeMillis());
         LogEvent event = builder.build();
@@ -172,6 +176,7 @@ public class LogStashJSONLayoutJacksonIT {
                  "[", //header
                  "]", //footer
                  Charset.defaultCharset(),
+                 true, //includeStackTrace
                  new KeyValuePair[]{new KeyValuePair("Foo", "Bar")}
          );
 

@@ -18,7 +18,7 @@ public class LogStashLog4jJsonObjectMapper extends ObjectMapper {
      * Create a new instance using the {@link LogStashLog4jJsonModule}.
      */
     public LogStashLog4jJsonObjectMapper() {
-        this(false);
+        this(false, true);
     }
 
     /**
@@ -26,9 +26,11 @@ public class LogStashLog4jJsonObjectMapper extends ObjectMapper {
      *
      * @param encodeThreadContextAsList
      *            when true, make ThreadContext map to be a list of map entries where each entry has a "key" attribute with the key value and a "value" attribute with the value value (old behavior), instead of "natural" JSON/YAML map
+     * @param includeStackTrace
+     *            If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
      */
-    public LogStashLog4jJsonObjectMapper(final boolean encodeThreadContextAsList) {
-        this.registerModule(new LogStashLog4jJsonModule(encodeThreadContextAsList));
+    public LogStashLog4jJsonObjectMapper(final boolean encodeThreadContextAsList, final boolean includeStackTrace) {
+        this.registerModule(new LogStashLog4jJsonModule(encodeThreadContextAsList,includeStackTrace));
         this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
 
